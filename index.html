@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Liquid Raffle — розыгрыши в Telegram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 30% 20%, #1a1a2e, #0a0a15, #030308);
+            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            padding: 16px;
+            color: white;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Шапка */
+        .header {
+            text-align: center;
+            padding: 24px 20px;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 590;
+            background: linear-gradient(135deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .sub {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        /* Профиль */
+        .profile-card {
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .tickets-count {
+            background: rgba(255,215,0,0.15);
+            border-radius: 60px;
+            padding: 8px 16px;
+            font-weight: 600;
+            color: #ffd966;
+        }
+
+        /* Розыгрыш */
+        .raffle-card {
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .raffle-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .raffle-prize {
+            color: #ffd966;
+            font-size: 16px;
+        }
+        .raffle-stats {
+            display: flex;
+            gap: 16px;
+            margin: 12px 0;
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            flex-wrap: wrap;
+        }
+        .participants-count {
+            color: #4ecdc4;
+            font-weight: 600;
+        }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd966, #ffaa00);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        .join-btn {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05));
+            border: 0.5px solid rgba(255,215,0,0.4);
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #ffd966;
+            margin-top: 12px;
+            font-size: 16px;
+        }
+        .join-btn:active { transform: scale(0.97); }
+        .join-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Мои билеты */
+        .my-tickets {
+            padding: 20px;
+            margin-top: 16px;
+        }
+        .ticket {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            border-radius: 60px;
+            padding: 6px 14px;
+            margin: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        /* Победители */
+        .winners-list {
+            padding: 20px;
+            margin-top: 16px;
+        }
+        .winner-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
+        }
+        .ended-raffle {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 32px;
+        }
+
+        /* Кнопка доната */
+        .donate-btn {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05));
+            border: 0.5px solid rgba(255,215,0,0.4);
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #ffd966;
+            margin: 20px 0 12px;
+        }
+        .support-text {
+            text-align: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(20px);
+            padding: 10px 20px;
+            border-radius: 60px;
+            color: white;
+            z-index: 1000;
+            display: none;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255,255,255,0.4);
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Шапка -->
+    <div class="glass header">
+        <h1>🎁 Liquid Raffle</h1>
+        <div class="sub">участвуй в розыгрышах • выигрывай призы</div>
+    </div>
+
+    <!-- Профиль -->
+    <div class="glass profile-card">
+        <div class="user-info">
+            <div class="avatar" id="userAvatar">👤</div>
+            <div>
+                <div id="userName">Загрузка...</div>
+                <div style="font-size: 11px; color: rgba(255,255,255,0.4);" id="userUsername">@username</div>
+            </div>
+        </div>
+        <div class="tickets-count" id="ticketsCount">🎫 0</div>
+    </div>
+
+    <!-- Активные розыгрыши -->
+    <div class="section-title">🎯 Активные розыгрыши</div>
+    <div id="rafflesContainer"></div>
+
+    <!-- Мои билеты -->
+    <div class="glass my-tickets" id="myTicketsSection" style="display: none;">
+        <div style="margin-bottom: 12px;">🎫 Мои билеты</div>
+        <div id="myTicketsList"></div>
+    </div>
+
+    <!-- Завершённые розыгрыши -->
+    <div class="section-title" id="endedTitle" style="display: none;">🏆 Завершённые розыгрыши</div>
+    <div id="endedRafflesContainer"></div>
+
+    <!-- Кнопка доната -->
+    <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate-btn">
+        ☕️ Поддержать проект
+    </a>
+    <div class="support-text">
+        💙 Ваша поддержка = больше призов и розыгрышей!
+    </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+<script>
+    // ========== TELEGRAM WEBAPP ==========
+    let tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.enableClosingConfirmation();
+    
+    // Получаем данные пользователя из Telegram
+    let user = tg.initDataUnsafe?.user || {
+        id: Math.floor(Math.random() * 1000000),
+        first_name: "Гость",
+        username: "guest"
+    };
+    
+    document.getElementById('userName').innerText = user.first_name || "Участник";
+    document.getElementById('userUsername').innerText = user.username ? `@${user.username}` : "@unknown";
+    document.getElementById('userAvatar').innerText = user.first_name ? user.first_name[0].toUpperCase() : "👤";
+    
+    let userId = `tg_${user.id}`;
+    
+    // ========== НАЧАЛЬНЫЕ ДАННЫЕ ==========
+    // Активные розыгрыши (можно менять и добавлять через консоль)
+    let activeRaffles = [
+        {
+            id: "raffle_1",
+            title: "💰 10 000 рублей",
+            prize: "10 000 ₽",
+            prizeValue: 10000,
+            winnersCount: 3,
+            maxParticipants: 100,
+            endTime: Date.now() + 3 * 24 * 60 * 60 * 1000,
+            participants: [],
+            tickets: [],
+            isActive: true,
+            winners: []
+        },
+        {
+            id: "raffle_2",
+            title: "📱 iPhone 16",
+            prize: "iPhone 16 128GB",
+            prizeValue: 80000,
+            winnersCount: 1,
+            maxParticipants: 200,
+            endTime: Date.now() + 5 * 24 * 60 * 60 * 1000,
+            participants: [],
+            tickets: [],
+            isActive: true,
+            winners: []
+        },
+        {
+            id: "raffle_3",
+            title: "🎧 AirPods Pro 2",
+            prize: "AirPods Pro 2",
+            prizeValue: 25000,
+            winnersCount: 2,
+            maxParticipants: 50,
+            endTime: Date.now() + 2 * 24 * 60 * 60 * 1000,
+            participants: [],
+            tickets: [],
+            isActive: true,
+            winners: []
+        }
+    ];
+    
+    let endedRaffles = [];
+    let userTickets = [];
+    let ticketsMap = {};
+    
+    // ========== ЗАГРУЗКА/СОХРАНЕНИЕ ==========
+    function loadData() {
+        const saved = localStorage.getItem(`liquid_raffle_${userId}`);
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                userTickets = data.userTickets || [];
+                ticketsMap = data.ticketsMap || {};
+                
+                // Восстанавливаем участников розыгрышей
+                if (data.activeRaffles) {
+                    activeRaffles.forEach((raffle, idx) => {
+                        if (data.activeRaffles[idx]) {
+                            raffle.participants = data.activeRaffles[idx].participants || [];
+                            raffle.tickets = data.activeRaffles[idx].tickets || [];
+                            raffle.winners = data.activeRaffles[idx].winners || [];
+                        }
+                    });
+                }
+                if (data.endedRaffles) endedRaffles = data.endedRaffles;
+            } catch(e) {}
+        }
+        
+        updateUserTicketsDisplay();
+        checkAndEndRaffles();
+        render();
+    }
+    
+    function saveData() {
+        localStorage.setItem(`liquid_raffle_${userId}`, JSON.stringify({
+            userTickets: userTickets,
+            ticketsMap: ticketsMap,
+            activeRaffles: activeRaffles.map(r => ({
+                participants: r.participants,
+                tickets: r.tickets,
+                winners: r.winners
+            })),
+            endedRaffles: endedRaffles
+        }));
+    }
+    
+    // ========== УЧАСТИЕ В РОЗЫГРЫШЕ ==========
+    function joinRaffle(raffleId) {
+        const raffle = activeRaffles.find(r => r.id === raffleId);
+        if (!raffle || !raffle.isActive) {
+            showToast("❌ Розыгрыш уже завершён!");
+            return;
+        }
+        
+        if (raffle.participants.includes(userId)) {
+            showToast("✅ Вы уже участвуете в этом розыгрыше!");
+            return;
+        }
+        
+        if (raffle.participants.length >= raffle.maxParticipants) {
+            showToast("❌ Достигнут лимит участников!");
+            return;
+        }
+        
+        // Добавляем участника
+        raffle.participants.push(userId);
+        
+        // Генерируем билет
+        const ticketNumber = Math.floor(Math.random() * 9999) + 1;
+        const ticketId = `${raffleId}_${ticketNumber}_${Date.now()}`;
+        
+        raffle.tickets.push({
+            userId: userId,
+            ticketId: ticketId,
+            ticketNumber: ticketNumber,
+            username: user.username || user.first_name
+        });
+        
+        userTickets.push(ticketId);
+        ticketsMap[ticketId] = {
+            raffleId: raffleId,
+            ticketNumber: ticketNumber,
+            raffleTitle: raffle.title
+        };
+        
+        saveData();
+        updateUserTicketsDisplay();
+        render();
+        showToast(`🎫 Участие принято! Ваш билет: #${ticketNumber}`);
+        
+        // Отправляем данные в Telegram бот
+        tg.sendData(JSON.stringify({
+            action: "join",
+            raffleId: raffleId,
+            raffleTitle: raffle.title,
+            userId: userId,
+            username: user.username || user.first_name,
+            ticketNumber: ticketNumber
+        }));
+    }
+    
+    // ========== ПРОВЕРКА ЗАВЕРШЕНИЯ РОЗЫГРЫШЕЙ ==========
+    function checkAndEndRaffles() {
+        const now = Date.now();
+        let changed = false;
+        
+        for (let i = activeRaffles.length - 1; i >= 0; i--) {
+            const raffle = activeRaffles[i];
+            const timeEnded = now >= raffle.endTime;
+            const participantsFull = raffle.participants.length >= raffle.maxParticipants;
+            
+            if (timeEnded || participantsFull) {
+                const winners = determineWinners(raffle);
+                raffle.winners = winners;
+                raffle.isActive = false;
+                
+                endedRaffles.unshift({
+                    ...raffle,
+                    endedAt: now,
+                    endReason: timeEnded ? "⏰ Время вышло" : "👥 Лимит участников"
+                });
+                
+                activeRaffles.splice(i, 1);
+                changed = true;
+                
+                // Уведомляем победителей через бота
+                winners.forEach(winner => {
+                    tg.sendData(JSON.stringify({
+                        action: "win",
+                        raffleId: raffle.id,
+                        raffleTitle: raffle.title,
+                        prize: raffle.prize,
+                        winnerId: winner.userId,
+                        winnerUsername: winner.username,
+                        ticketNumber: winner.ticketNumber
+                    }));
+                });
+                
+                showToast(`🏆 Розыгрыш "${raffle.title}" завершён!`);
+            }
+        }
+        
+        if (changed) {
+            saveData();
+            render();
+        }
+    }
+    
+    function determineWinners(raffle) {
+        if (raffle.tickets.length === 0) return [];
+        
+        // Перемешиваем билеты
+        const shuffled = [...raffle.tickets];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        
+        // Выбираем уникальных победителей
+        const winners = [];
+        const winnerUserIds = new Set();
+        
+        for (const ticket of shuffled) {
+            if (winners.length >= raffle.winnersCount) break;
+            if (!winnerUserIds.has(ticket.userId)) {
+                winnerUserIds.add(ticket.userId);
+                winners.push({
+                    userId: ticket.userId,
+                    username: ticket.username,
+                    ticketNumber: ticket.ticketNumber,
+                    prize: raffle.prize
+                });
+            }
+        }
+        
+        return winners;
+    }
+    
+    // ========== ОТРИСОВКА ==========
+    function updateUserTicketsDisplay() {
+        document.getElementById('ticketsCount').innerHTML = `🎫 ${userTickets.length}`;
+        
+        const myTicketsSection = document.getElementById('myTicketsSection');
+        const myTicketsList = document.getElementById('myTicketsList');
+        
+        if (userTickets.length > 0) {
+            myTicketsSection.style.display = 'block';
+            const tickets = userTickets.map(ticketId => {
+                const info = ticketsMap[ticketId];
+                return info ? `${info.raffleTitle} → #${info.ticketNumber}` : ticketId.slice(-6);
+            });
+            myTicketsList.innerHTML = tickets.map(t => `<span class="ticket">🎫 ${t}</span>`).join('');
+        } else {
+            myTicketsSection.style.display = 'none';
+        }
+    }
+    
+    function formatTimeLeft(endTime) {
+        const diff = endTime - Date.now();
+        if (diff <= 0) return "Завершён";
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (86400000)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (3600000)) / (1000 * 60));
+        if (days > 0) return `${days}д ${hours}ч`;
+        if (hours > 0) return `${hours}ч ${minutes}м`;
+        return `${minutes}м`;
+    }
+    
+    function render() {
+        // Активные розыгрыши
+        const container = document.getElementById('rafflesContainer');
+        if (activeRaffles.length === 0) {
+            container.innerHTML = `<div class="glass empty-state">🎉 Нет активных розыгрышей.<br>Загляните позже!</div>`;
+        } else {
+            container.innerHTML = activeRaffles.map(raffle => {
+                const isParticipant = raffle.participants.includes(userId);
+                const percentFull = (raffle.participants.length / raffle.maxParticipants) * 100;
+                const timeLeft = formatTimeLeft(raffle.endTime);
+                
+                return `
+                    <div class="glass raffle-card">
+                        <div class="raffle-title">
+                            <span>${raffle.title}</span>
+                            <span class="raffle-prize">${raffle.prize}</span>
+                        </div>
+                        <div class="raffle-stats">
+                            <span>👥 ${raffle.participants.length}/${raffle.maxParticipants}</span>
+                            <span>🎫 ${raffle.tickets.length} билетов</span>
+                            <span>🏆 ${raffle.winnersCount} побед.</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percentFull}%;"></div>
+                        </div>
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px;">
+                            ⏰ ${timeLeft}
+                        </div>
+                        <button class="join-btn ${isParticipant ? 'disabled' : ''}" 
+                                onclick="${isParticipant ? '' : `joinRaffle('${raffle.id}')`}"
+                                ${isParticipant ? 'disabled' : ''}>
+                            ${isParticipant ? '✅ Вы участвуете' : '🎫 Участвовать'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Завершённые розыгрыши
+        const endedContainer = document.getElementById('endedRafflesContainer');
+        const endedTitle = document.getElementById('endedTitle');
+        
+        if (endedRaffles.length === 0) {
+            endedContainer.innerHTML = '';
+            endedTitle.style.display = 'none';
+        } else {
+            endedTitle.style.display = 'block';
+            endedContainer.innerHTML = endedRaffles.map(raffle => `
+                <div class="glass ended-raffle">
+                    <div style="font-weight: 600; margin-bottom: 8px;">${raffle.title}</div>
+                    <div style="font-size: 13px; color: #ffd966; margin-bottom: 8px;">Приз: ${raffle.prize}</div>
+                    <div style="font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 12px;">${raffle.endReason}</div>
+                    <div style="margin-top: 8px;">
+                        ${raffle.winners.map(w => `
+                            <div class="winner-item">
+                                <span>🏆 ${w.username || w.userId.slice(0, 10)}</span>
+                                <span>🎫 #${w.ticketNumber}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+    
+    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 2000);
+    }
+    
+    // ========== КОМАНДЫ ДЛЯ АДМИНА (в консоли) ==========
+    window.addRaffle = (title, prize, winnersCount, maxParticipants, hoursLeft) => {
+        if (!title || !prize || !winnersCount || !maxParticipants || !hoursLeft) {
+            console.log("❌ Использование: addRaffle('Название', 'Приз', кол-во_победителей, макс_участников, часы)");
+            return;
+        }
+        activeRaffles.push({
+            id: `raffle_${Date.now()}`,
+            title: title,
+            prize: prize,
+            prizeValue: 0,
+            winnersCount: winnersCount,
+            maxParticipants: maxParticipants,
+            endTime: Date.now() + hoursLeft * 60 * 60 * 1000,
+            participants: [],
+            tickets: [],
+            isActive: true,
+            winners: []
+        });
+        saveData();
+        render();
+        showToast(`✅ Розыгрыш "${title}" добавлен!`);
+    };
+    
+    window.endRaffleNow = (raffleId) => {
+        const raffle = activeRaffles.find(r => r.id === raffleId);
+        if (raffle) {
+            raffle.endTime = Date.now() - 1;
+            checkAndEndRaffles();
+            render();
+            showToast(`🎲 Розыгрыш завершён досрочно!`);
+        } else {
+            showToast(`❌ Розыгрыш с ID "${raffleId}" не найден`);
+        }
+    };
+    
+    window.addPremiumCode = (code) => {
+        showToast(`✨ Премиум активирован! +1 билет на след. розыгрыш`);
+        // Здесь можно добавить логику для премиум-пользователей
+    };
+    
+    window.showRafflesList = () => {
+        console.log("📋 Активные розыгрыши:");
+        activeRaffles.forEach(r => {
+            console.log(`  - ${r.id}: ${r.title} (${r.participants.length}/${r.maxParticipants} участ.)`);
+        });
+    };
+    
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    loadData();
+    
+    // Проверяем завершение каждую минуту
+    setInterval(() => {
+        checkAndEndRaffles();
+        render();
+    }, 60000);
+    
+    console.log("🎁 Liquid Raffle запущен!");
+    console.log("💡 Команды:");
+    console.log("   addRaffle('Название', 'Приз', победители, макс_участников, часы)");
+    console.log("   endRaffleNow('raffle_id') - завершить розыгрыш");
+    console.log("   showRafflesList() - список активных розыгрышей");
+</script>
+</body>
+</html>
