@@ -2,9 +2,14 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Школьный портал | Электронная школа</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Школа №22 | Тюмень | Электронный дневник</title>
+    
+    <!-- Google Fonts Inter + SF Pro -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100;14..32,200;14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    
     <style>
+        /* ========== RESET & GLOBAL ========== */
         * {
             margin: 0;
             padding: 0;
@@ -12,25 +17,58 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: radial-gradient(circle at 20% 30%, #1a1a2e, #0a0a15, #05050a);
             min-height: 100vh;
-            color: #333;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* iOS 26 Liquid Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .glass:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Стилизация скролла */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
         }
 
         /* Header */
         .header {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
+            position: sticky;
+            top: 16px;
+            margin: 16px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(40px);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 80px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
             z-index: 1000;
         }
 
@@ -39,15 +77,11 @@
             align-items: center;
             gap: 12px;
         }
-
-        .logo-icon {
-            font-size: 32px;
-        }
-
+        .logo-icon { font-size: 32px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); }
         .logo-text {
-            font-size: 22px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-size: 20px;
+            font-weight: 590;
+            background: linear-gradient(135deg, #fff, #aaa);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -55,429 +89,290 @@
 
         .nav {
             display: flex;
-            gap: 20px;
+            gap: 8px;
             flex-wrap: wrap;
         }
-
         .nav-btn {
-            background: none;
-            border: none;
+            background: rgba(255,255,255,0.08);
+            border: 0.5px solid rgba(255,255,255,0.2);
             padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 30px;
-            transition: 0.3s;
+            font-size: 14px;
             font-weight: 500;
-        }
-
-        .nav-btn:hover {
-            background: #f0f0f0;
-        }
-
-        .nav-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            border-radius: 60px;
             color: white;
+            transition: 0.2s;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.2); transform: scale(0.96); }
+        .nav-btn.active {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.5);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            background: rgba(255,255,255,0.08);
+            padding: 6px 16px 6px 6px;
+            border-radius: 60px;
         }
-
         .avatar {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
+            font-weight: 600;
         }
 
-        /* Main Container */
+        /* Container */
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 16px;
         }
 
-        /* Dashboard */
+        /* Dashboard Grid */
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            padding: 24px;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
         .card-title {
             font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #667eea;
-            border-left: 4px solid #667eea;
-            padding-left: 12px;
+            font-weight: 590;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.9);
         }
 
-        /* Schedule */
+        /* Расписание */
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
         }
-
         .schedule-table th, .schedule-table td {
-            padding: 12px;
+            padding: 12px 8px;
             text-align: left;
-            border-bottom: 1px solid #eee;
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
         }
+        .schedule-table th { color: #4ecdc4; font-weight: 500; }
 
-        .schedule-table th {
-            background: #f8f9fa;
-            color: #667eea;
-        }
-
-        .lesson {
-            background: #e8f0fe;
-            border-radius: 8px;
-            padding: 4px 8px;
-            display: inline-block;
-            font-size: 13px;
-        }
-
-        /* Grades */
+        /* Оценки */
         .grades-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
+            gap: 12px;
         }
-
         .grade-item {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 24px;
             text-align: center;
         }
+        .grade-subject { font-size: 12px; color: rgba(255,255,255,0.6); }
+        .grade-value { font-size: 28px; font-weight: 600; color: #ffd966; }
 
-        .grade-subject {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .grade-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        /* Homework */
-        .homework-list {
-            list-style: none;
-        }
-
+        /* ДЗ */
+        .homework-list { list-style: none; }
         .homework-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
+            padding: 14px 0;
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-
-        .homework-subject {
-            font-weight: 600;
-            color: #667eea;
-        }
-
+        .homework-subject { font-weight: 600; color: #4ecdc4; }
         .homework-deadline {
             font-size: 12px;
             color: #ff6b6b;
+            background: rgba(255,107,107,0.15);
+            padding: 4px 12px;
+            border-radius: 60px;
         }
 
-        /* News */
-        .news-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .news-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .news-date {
-            font-size: 11px;
-            color: #999;
-        }
-
-        /* Teachers */
+        /* Учителя */
         .teachers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 20px;
         }
-
         .teacher-card {
-            background: white;
-            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 32px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
         .teacher-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
-            font-size: 32px;
+            font-size: 28px;
         }
+        .teacher-name { font-size: 16px; font-weight: 600; }
+        .teacher-subject { color: #4ecdc4; font-size: 13px; }
 
-        .teacher-name {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .teacher-subject {
-            color: #667eea;
-            font-size: 14px;
-        }
-
-        /* Library */
+        /* Библиотека */
         .library-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
         }
-
         .book-card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 28px;
+            padding: 16px;
             text-align: center;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
         }
+        .book-card:hover { background: rgba(255,255,255,0.1); transform: scale(1.02); }
+        .book-cover { font-size: 40px; margin-bottom: 10px; }
+        .book-title { font-weight: 600; font-size: 13px; }
+        .book-author { font-size: 11px; color: rgba(255,255,255,0.5); }
 
-        .book-card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-
-        .book-cover {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .book-title {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-
-        .book-author {
-            font-size: 12px;
-            color: #999;
-        }
-
-        /* Chat */
+        /* Чат */
         .chat-container {
             display: flex;
             flex-direction: column;
             height: 500px;
-            background: white;
-            border-radius: 20px;
+            border-radius: 48px;
             overflow: hidden;
+            background: rgba(255,255,255,0.05);
         }
-
         .chat-messages {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
         }
-
         .message {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
-
         .message-avatar {
-            width: 35px;
-            height: 35px;
-            background: #667eea;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             font-size: 14px;
         }
-
         .message-content {
             flex: 1;
-            background: #f0f2f5;
-            padding: 10px 15px;
-            border-radius: 18px;
+            background: rgba(255,255,255,0.08);
+            padding: 10px 16px;
+            border-radius: 24px;
             max-width: 70%;
         }
-
-        .message-name {
-            font-weight: 600;
-            font-size: 12px;
-            margin-bottom: 4px;
-            color: #667eea;
-        }
-
-        .message-text {
-            font-size: 14px;
-        }
-
+        .message-name { font-weight: 600; font-size: 12px; color: #4ecdc4; margin-bottom: 4px; }
         .chat-input-area {
             display: flex;
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #eee;
-            gap: 10px;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            gap: 12px;
+            border-top: 0.5px solid rgba(255,255,255,0.1);
         }
-
         .chat-input {
             flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.08);
+            border: 0.5px solid rgba(255,255,255,0.2);
+            border-radius: 60px;
+            color: white;
             outline: none;
         }
-
         .chat-send {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
+            background: linear-gradient(135deg, rgba(78,205,196,0.3), rgba(78,205,196,0.1));
+            border: 0.5px solid rgba(78,205,196,0.4);
+            padding: 12px 28px;
+            border-radius: 60px;
             color: white;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        /* Map */
-        .school-map {
-            background: #e8f0fe;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-        }
-
+        /* Карта школы */
         .map-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
             margin-top: 20px;
         }
-
         .map-room {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            padding: 14px;
+            border-radius: 24px;
             text-align: center;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.2s;
         }
+        .map-room:hover { background: rgba(255,255,255,0.12); transform: scale(0.98); }
 
-        .map-room:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        /* Calculator */
+        /* Калькулятор */
         .calculator {
-            background: #2c3e50;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 48px;
             padding: 20px;
-            color: white;
         }
-
         .calc-display {
-            background: #1a252f;
+            background: rgba(0,0,0,0.3);
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 32px;
             text-align: right;
             font-size: 32px;
             margin-bottom: 20px;
-            font-family: monospace;
         }
-
         .calc-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
-
         .calc-btn {
-            background: #34495e;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
+            background: rgba(255,255,255,0.08);
+            border: 0.5px solid rgba(255,255,255,0.2);
+            padding: 18px;
+            border-radius: 60px;
             color: white;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             transition: 0.1s;
         }
+        .calc-btn:active { transform: scale(0.94); }
+        .calc-btn.operator { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+        .calc-btn.equals { background: rgba(78,205,196,0.2); color: #4ecdc4; }
 
-        .calc-btn:active {
-            transform: scale(0.95);
-        }
-
-        .calc-btn.operator {
-            background: #e67e22;
-        }
-
-        .calc-btn.equals {
-            background: #27ae60;
-        }
-
-        /* Weather */
+        /* Погода */
         .weather-widget {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 15px;
         }
+        .weather-temp { font-size: 48px; font-weight: 600; }
+        .weather-icon { font-size: 52px; }
 
-        .weather-temp {
-            font-size: 48px;
-            font-weight: bold;
-        }
-
-        .weather-icon {
-            font-size: 48px;
-        }
-
-        /* Footer */
-        .footer {
-            background: rgba(0,0,0,0.8);
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-        }
-
-        /* Modal */
+        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
@@ -485,71 +380,53 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
         }
-
         .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(40px);
+            border: 0.5px solid rgba(255,255,255,0.2);
+            border-radius: 64px;
+            padding: 32px;
             max-width: 500px;
             width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            .map-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Animations */
+        /* Анимация страниц */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         .page {
             display: none;
             animation: fadeIn 0.4s ease;
         }
+        .page.active { display: block; }
 
-        .page.active {
-            display: block;
+        /* Адаптив */
+        @media (max-width: 768px) {
+            .header { flex-direction: column; border-radius: 48px; }
+            .dashboard { grid-template-columns: 1fr; }
+            .map-grid { grid-template-columns: repeat(2, 1fr); }
+            .message-content { max-width: 85%; }
         }
+
+        /* Скины (темы) */
+        body.theme-cherry { background: radial-gradient(circle at 20% 30%, #3a1a1a, #2a0a0a, #1a0303); }
+        body.theme-ocean { background: radial-gradient(circle at 20% 30%, #1a3a3a, #0a2a2a, #031a1a); }
+        body.theme-purple { background: radial-gradient(circle at 20% 30%, #2a1a3a, #1a0a2a, #0a031a); }
+        body.theme-gold { background: radial-gradient(circle at 20% 30%, #3a2a0a, #2a1a00, #1a0e00); }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">
             <div class="logo-icon">🏫</div>
-            <div class="logo-text">Школьный Портал</div>
+            <div class="logo-text">Школа №22 • Корпус 2 • Тюмень</div>
         </div>
         <div class="nav">
             <button class="nav-btn active" data-page="dashboard">📊 Главная</button>
@@ -561,103 +438,103 @@
             <button class="nav-btn" data-page="chat">💬 Чат</button>
             <button class="nav-btn" data-page="map">🗺️ Карта</button>
             <button class="nav-btn" data-page="calculator">🧮 Калькулятор</button>
+            <button class="nav-btn" data-page="settings">⚙️ Настройки</button>
         </div>
         <div class="user-info">
             <div class="avatar">А</div>
-            <span>Анна Иванова<br><small>10 "А" класс</small></span>
+            <span>Анна Иванова<br><small>9 "Б" класс</small></span>
         </div>
     </div>
 
     <div class="container">
-        <!-- Page: Dashboard -->
+        <!-- Главная -->
         <div id="dashboard" class="page active">
             <div class="dashboard">
-                <div class="card">
+                <div class="card glass">
                     <div class="card-title">📅 Сегодня</div>
-                    <div id="currentDate" style="font-size: 24px; margin-bottom: 15px;"></div>
+                    <div id="currentDate" style="font-size: 28px; font-weight: 590; margin-bottom: 16px;"></div>
                     <div id="currentLessons"></div>
                 </div>
-                <div class="card">
-                    <div class="card-title">🌤️ Погода в школе</div>
-                    <div class="weather-widget" id="weatherWidget">
-                        <div class="weather-temp" id="weatherTemp">+18°C</div>
-                        <div class="weather-icon" id="weatherIcon">☀️</div>
+                <div class="card glass">
+                    <div class="card-title">🌤️ Погода в Тюмени</div>
+                    <div class="weather-widget">
+                        <div class="weather-temp" id="weatherTemp">--°C</div>
+                        <div class="weather-icon" id="weatherIcon">🌡️</div>
                     </div>
-                    <div id="weatherDesc">Солнечно, отличный день для учёбы!</div>
+                    <div id="weatherDesc">Загрузка...</div>
+                    <div id="weatherDetails" style="font-size: 12px; margin-top: 12px; color: rgba(255,255,255,0.5);"></div>
                 </div>
-                <div class="card">
-                    <div class="card-title">📢 Новости школы</div>
+                <div class="card glass">
+                    <div class="card-title">📢 Новости школы №22</div>
                     <div id="newsList"></div>
                 </div>
             </div>
             <div class="dashboard">
-                <div class="card">
+                <div class="card glass">
                     <div class="card-title">🏆 Отличники недели</div>
                     <div id="topStudents"></div>
                 </div>
-                <div class="card">
+                <div class="card glass">
                     <div class="card-title">📖 Книга месяца</div>
                     <div id="bookOfMonth"></div>
                 </div>
-                <div class="card">
+                <div class="card glass">
                     <div class="card-title">⚡ Ближайшие события</div>
                     <div id="eventsList"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Page: Schedule -->
+        <!-- Расписание -->
         <div id="schedule" class="page">
-            <div class="card">
-                <div class="card-title">📅 Расписание уроков на неделю</div>
+            <div class="card glass">
+                <div class="card-title">📅 Расписание 9 "Б" класса</div>
                 <table class="schedule-table" id="scheduleTable">
-                    <thead>
-                        <tr><th>Время</th><th>Понедельник</th><th>Вторник</th><th>Среда</th><th>Четверг</th><th>Пятница</th></tr>
-                    </thead>
+                    <thead><tr><th>Время</th><th>ПН</th><th>ВТ</th><th>СР</th><th>ЧТ</th><th>ПТ</th><th>СБ</th></tr></thead>
                     <tbody id="scheduleBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Page: Grades -->
+        <!-- Дневник -->
         <div id="grades" class="page">
-            <div class="card">
+            <div class="card glass">
                 <div class="card-title">📚 Успеваемость</div>
                 <div id="gradesContainer"></div>
-                <div style="margin-top: 20px;">
-                    <strong>Средний балл:</strong> <span id="averageGrade">0</span>
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 0.5px solid rgba(255,255,255,0.1);">
+                    <strong>Средний балл:</strong> <span id="averageGrade" style="font-size: 28px; color: #ffd966;">0</span>
                 </div>
             </div>
         </div>
 
-        <!-- Page: Homework -->
+        <!-- Домашние задания -->
         <div id="homework" class="page">
-            <div class="card">
+            <div class="card glass">
                 <div class="card-title">📝 Домашние задания</div>
                 <ul class="homework-list" id="homeworkList"></ul>
             </div>
         </div>
 
-        <!-- Page: Teachers -->
+        <!-- Учителя -->
         <div id="teachers" class="page">
-            <div class="card">
-                <div class="card-title">👨‍🏫 Наши учителя</div>
+            <div class="card glass">
+                <div class="card-title">👨‍🏫 Педагогический состав (корпус 2)</div>
                 <div class="teachers-grid" id="teachersGrid"></div>
             </div>
         </div>
 
-        <!-- Page: Library -->
+        <!-- Библиотека -->
         <div id="library" class="page">
-            <div class="card">
-                <div class="card-title">📖 Электронная библиотека</div>
+            <div class="card glass">
+                <div class="card-title">📖 Школьная библиотека</div>
                 <div class="library-grid" id="libraryGrid"></div>
             </div>
         </div>
 
-        <!-- Page: Chat -->
+        <!-- Чат -->
         <div id="chat" class="page">
-            <div class="card">
-                <div class="card-title">💬 Школьный чат</div>
+            <div class="card glass" style="padding: 0; overflow: hidden;">
+                <div class="card-title" style="padding: 20px 24px 0 24px;">💬 Чат класса</div>
                 <div class="chat-container">
                     <div class="chat-messages" id="chatMessages"></div>
                     <div class="chat-input-area">
@@ -668,434 +545,406 @@
             </div>
         </div>
 
-        <!-- Page: Map -->
+        <!-- Карта школы -->
         <div id="map" class="page">
-            <div class="card">
-                <div class="card-title">🗺️ Карта школы</div>
-                <div class="school-map">
-                    <p>🏫 План 3 этажа</p>
-                    <div class="map-grid" id="mapGrid"></div>
-                </div>
+            <div class="card glass">
+                <div class="card-title">🗺️ Карта школы №22, корпус 2 (Тюмень, ул. Харьковская, 71)</div>
+                <div class="map-grid" id="mapGrid"></div>
             </div>
         </div>
 
-        <!-- Page: Calculator -->
+        <!-- Калькулятор -->
         <div id="calculator" class="page">
-            <div class="card">
-                <div class="card-title">🧮 Калькулятор</div>
+            <div class="card glass" style="padding: 0; overflow: hidden;">
+                <div class="card-title" style="padding: 20px 24px 0 24px;">🧮 Калькулятор</div>
                 <div class="calculator">
                     <div class="calc-display" id="calcDisplay">0</div>
                     <div class="calc-buttons" id="calcButtons"></div>
                 </div>
             </div>
         </div>
+
+        <!-- Настройки -->
+        <div id="settings" class="page">
+            <div class="dashboard">
+                <div class="card glass">
+                    <div class="card-title">⚙️ Настройки профиля</div>
+                    <div style="margin-bottom: 20px;"><label>👤 ФИО</label><input type="text" id="userName" class="chat-input" style="width:100%; margin-top:8px;" value="Анна Иванова"></div>
+                    <div style="margin-bottom: 20px;"><label>📚 Класс</label><input type="text" id="userClass" class="chat-input" style="width:100%; margin-top:8px;" value="9 Б"></div>
+                    <div style="margin-bottom: 20px;"><label>🏫 Школа</label><input type="text" id="userSchool" class="chat-input" style="width:100%; margin-top:8px;" value="Школа №22, корпус 2, Тюмень"></div>
+                    <button id="saveSettingsBtn" class="chat-send" style="width:100%;">💾 Сохранить</button>
+                </div>
+                <div class="card glass">
+                    <div class="card-title">🎨 Оформление (iOS 26 Liquid Glass)</div>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button class="nav-btn theme-btn" data-theme="default">🌙 Default</button>
+                        <button class="nav-btn theme-btn" data-theme="cherry">🍒 Cherry</button>
+                        <button class="nav-btn theme-btn" data-theme="ocean">🌊 Ocean</button>
+                        <button class="nav-btn theme-btn" data-theme="purple">💜 Purple</button>
+                        <button class="nav-btn theme-btn" data-theme="gold">👑 Gold</button>
+                    </div>
+                </div>
+                <div class="card glass">
+                    <div class="card-title">ℹ️ О портале</div>
+                    <p>Версия: 3.0 (Liquid Glass)</p>
+                    <p>Для школы №22, корпус 2, г. Тюмень</p>
+                    <p>Техподдержка: school22@tyumen.ru</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="footer">
-        <p>© 2024 Школьный портал | Все права защищены | Сделано с ❤️ для учеников и учителей</p>
-        <p style="margin-top: 10px; font-size: 12px;">Версия 2.0 | Техподдержка: support@schoolportal.ru</p>
+    <div class="footer" style="text-align: center; padding: 24px; color: rgba(255,255,255,0.4);">
+        <p>🏫 МАОУ СОШ №22, корпус 2 | г. Тюмень, ул. Харьковская, 71 | ☎ +7 (3452) 33-22-11</p>
+        <p>© 2025 Школьный портал | Дизайн iOS 26 Liquid Glass</p>
     </div>
 
-    <!-- Modal for book details -->
+    <!-- Модальное окно для книги -->
     <div id="bookModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalBookTitle">Название книги</h3>
-                <button class="close-modal">&times;</button>
+            <div class="modal-header" style="display: flex; justify-content: space-between;">
+                <h3 id="modalBookTitle">Название</h3>
+                <button class="close-modal" style="background: none; border: none; font-size: 28px; color: white;">&times;</button>
             </div>
-            <p id="modalBookAuthor"><strong>Автор:</strong> </p>
-            <p id="modalBookDesc"><strong>Описание:</strong> </p>
-            <p id="modalBookYear"><strong>Год:</strong> </p>
-            <button id="borrowBookBtn" style="margin-top: 20px; background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer;">📖 Взять почитать</button>
+            <p id="modalBookAuthor"><strong>Автор:</strong></p>
+            <p id="modalBookDesc"><strong>Описание:</strong></p>
+            <p id="modalBookYear"><strong>Год:</strong></p>
+            <button id="borrowBookBtn" style="margin-top: 20px; background: rgba(78,205,196,0.2); border: 0.5px solid rgba(78,205,196,0.4); padding: 12px 24px; border-radius: 60px; color: white;">📖 Взять почитать</button>
         </div>
     </div>
 
     <script>
-        // ========== ДАННЫЕ ==========
-        // Расписание
+        // ========== 1. РЕАЛЬНАЯ ПОГОДА ДЛЯ ТЮМЕНИ (OpenWeatherMap) ==========
+        // Для работы получите бесплатный ключ на https://openweathermap.org/api
+        const WEATHER_API_KEY = 'YOUR_API_KEY_HERE'; // Замените на свой ключ
+        const CITY = 'Tyumen';
+        
+        async function fetchRealWeather() {
+            try {
+                if (WEATHER_API_KEY !== 'YOUR_API_KEY_HERE') {
+                    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${CITY},RU&units=metric&lang=ru&appid=${WEATHER_API_KEY}`);
+                    const data = await response.json();
+                    if (data.cod === 200) {
+                        const temp = Math.round(data.main.temp);
+                        const feelsLike = Math.round(data.main.feels_like);
+                        const desc = data.weather[0].description;
+                        const icon = getWeatherIcon(data.weather[0].icon);
+                        document.getElementById('weatherTemp').innerHTML = `${temp}°C`;
+                        document.getElementById('weatherIcon').innerHTML = icon;
+                        document.getElementById('weatherDesc').innerHTML = desc.charAt(0).toUpperCase() + desc.slice(1);
+                        document.getElementById('weatherDetails').innerHTML = `Ощущается ${feelsLike}°C | 💧 Влажность: ${data.main.humidity}% | 🌬️ Ветер: ${Math.round(data.wind.speed)} м/с`;
+                        return;
+                    }
+                }
+                // Fallback (бесплатный сервис wttr.in)
+                const fb = await fetch('https://wttr.in/Tyumen?format=j1&lang=ru');
+                const fbData = await fb.json();
+                if (fbData.current_condition) {
+                    const temp = fbData.current_condition[0].temp_C;
+                    const feels = fbData.current_condition[0].FeelsLikeC;
+                    const desc = fbData.current_condition[0].lang_ru[0].value;
+                    document.getElementById('weatherTemp').innerHTML = `${temp}°C`;
+                    document.getElementById('weatherIcon').innerHTML = getWeatherIconFromDesc(desc);
+                    document.getElementById('weatherDesc').innerHTML = desc;
+                    document.getElementById('weatherDetails').innerHTML = `Ощущается ${feels}°C | 💧 Влажность: ${fbData.current_condition[0].humidity}% | 🌬️ Ветер: ${fbData.current_condition[0].windspeedKmph} км/ч`;
+                    return;
+                }
+                throw new Error('API недоступны');
+            } catch(e) {
+                console.warn('Ошибка погоды, демо-режим', e);
+                document.getElementById('weatherTemp').innerHTML = '-8°C';
+                document.getElementById('weatherIcon').innerHTML = '☁️';
+                document.getElementById('weatherDesc').innerHTML = 'Облачно, возможен снег';
+                document.getElementById('weatherDetails').innerHTML = 'Тюмень, зима 2025';
+            }
+        }
+        
+        function getWeatherIcon(iconCode) {
+            const map = {'01d':'☀️','01n':'🌙','02d':'⛅','02n':'☁️','03d':'☁️','03n':'☁️','04d':'☁️','04n':'☁️','09d':'🌧️','09n':'🌧️','10d':'🌦️','10n':'🌧️','11d':'⛈️','11n':'⛈️','13d':'❄️','13n':'❄️','50d':'🌫️','50n':'🌫️'};
+            return map[iconCode] || '🌡️';
+        }
+        function getWeatherIconFromDesc(desc) {
+            if (desc.includes('солн')) return '☀️';
+            if (desc.includes('облач')) return '⛅';
+            if (desc.includes('снег')) return '❄️';
+            if (desc.includes('дожд')) return '🌧️';
+            return '🌡️';
+        }
+
+        // ========== 2. ДАННЫЕ ДЛЯ ШКОЛЫ №22 КОРПУС 2 ==========
         const scheduleData = {
-            monday: [
-                { time: "08:30-09:15", subject: "Математика" },
-                { time: "09:25-10:10", subject: "Русский язык" },
-                { time: "10:20-11:05", subject: "Физика" },
-                { time: "11:15-12:00", subject: "История" },
-                { time: "12:10-12:55", subject: "Английский" }
-            ],
-            tuesday: [
-                { time: "08:30-09:15", subject: "Литература" },
-                { time: "09:25-10:10", subject: "Алгебра" },
-                { time: "10:20-11:05", subject: "Химия" },
-                { time: "11:15-12:00", subject: "География" },
-                { time: "12:10-12:55", subject: "Физкультура" }
-            ],
-            wednesday: [
-                { time: "08:30-09:15", subject: "Геометрия" },
-                { time: "09:25-10:10", subject: "Русский язык" },
-                { time: "10:20-11:05", subject: "Биология" },
-                { time: "11:15-12:00", subject: "Обществознание" },
-                { time: "12:10-12:55", subject: "Информатика" }
-            ],
-            thursday: [
-                { time: "08:30-09:15", subject: "Математика" },
-                { time: "09:25-10:10", subject: "Физика" },
-                { time: "10:20-11:05", subject: "Английский" },
-                { time: "11:15-12:00", subject: "История" },
-                { time: "12:10-12:55", subject: "Литература" }
-            ],
-            friday: [
-                { time: "08:30-09:15", subject: "Химия" },
-                { time: "09:25-10:10", subject: "Биология" },
-                { time: "10:20-11:05", subject: "География" },
-                { time: "11:15-12:00", subject: "ОБЖ" },
-                { time: "12:10-12:55", subject: "Классный час" }
-            ]
+            monday:    [{time:"08:30-09:15", subject:"Математика"},{time:"09:25-10:10", subject:"Русский язык"},{time:"10:20-11:05", subject:"Физика"},{time:"11:15-12:00", subject:"История"},{time:"12:10-12:55", subject:"Английский"}],
+            tuesday:   [{time:"08:30-09:15", subject:"Литература"},{time:"09:25-10:10", subject:"Алгебра"},{time:"10:20-11:05", subject:"Химия"},{time:"11:15-12:00", subject:"География"},{time:"12:10-12:55", subject:"Физкультура"}],
+            wednesday: [{time:"08:30-09:15", subject:"Геометрия"},{time:"09:25-10:10", subject:"Русский язык"},{time:"10:20-11:05", subject:"Биология"},{time:"11:15-12:00", subject:"Обществознание"},{time:"12:10-12:55", subject:"Информатика"}],
+            thursday:  [{time:"08:30-09:15", subject:"Математика"},{time:"09:25-10:10", subject:"Физика"},{time:"10:20-11:05", subject:"Английский"},{time:"11:15-12:00", subject:"История"},{time:"12:10-12:55", subject:"Литература"}],
+            friday:    [{time:"08:30-09:15", subject:"Химия"},{time:"09:25-10:10", subject:"Биология"},{time:"10:20-11:05", subject:"География"},{time:"11:15-12:00", subject:"ОБЖ"},{time:"12:10-12:55", subject:"Классный час"}],
+            saturday:  [{time:"09:00-09:40", subject:"Факультатив по математике"},{time:"09:50-10:30", subject:"Спортивная секция"},{time:"10:40-11:20", subject:"Кружок робототехники"}]
         };
-
-        // Оценки
+        
         const gradesData = [
-            { subject: "Математика", grades: [5, 4, 5, 5, 4], weight: 2 },
-            { subject: "Русский язык", grades: [4, 5, 4, 4, 5], weight: 2 },
-            { subject: "Физика", grades: [5, 5, 4, 5], weight: 1 },
-            { subject: "Английский", grades: [4, 4, 5, 4, 4], weight: 2 },
-            { subject: "История", grades: [5, 5, 5, 4], weight: 1 },
-            { subject: "Литература", grades: [4, 5, 4, 5], weight: 1 },
-            { subject: "Химия", grades: [4, 4, 5, 4], weight: 1 },
-            { subject: "Биология", grades: [5, 5, 5, 5], weight: 1 }
+            { subject: "Математика", grades: [5,4,5,5,4,5], weight:2 }, { subject: "Русский язык", grades: [4,5,4,4,5,4], weight:2 },
+            { subject: "Физика", grades: [5,5,4,5,5], weight:1 }, { subject: "Английский", grades: [4,4,5,4,4,5], weight:2 },
+            { subject: "История", grades: [5,5,5,4,5], weight:1 }, { subject: "Литература", grades: [4,5,4,5,4], weight:1 },
+            { subject: "Химия", grades: [4,4,5,4,5], weight:1 }, { subject: "Биология", grades: [5,5,5,5,5], weight:1 },
+            { subject: "Информатика", grades: [5,4,5,4,5], weight:1 }, { subject: "Обществознание", grades: [4,5,4,4], weight:1 },
+            { subject: "География", grades: [5,5,4,5], weight:1 }, { subject: "Физкультура", grades: [5,5,5,5,5], weight:0.5 }
         ];
-
-        // Домашние задания
+        
         const homeworkData = [
-            { subject: "Математика", task: "Решить №245-250, подготовиться к контрольной", deadline: "2024-12-10" },
-            { subject: "Русский язык", task: "Написать сочинение на тему 'Моя будущая профессия'", deadline: "2024-12-12" },
-            { subject: "Физика", task: "Параграф 15-16, ответить на вопросы", deadline: "2024-12-09" },
-            { subject: "Английский", task: "Выучить новые слова, стр. 45-46", deadline: "2024-12-11" },
-            { subject: "История", task: "Подготовить доклад о Петре I", deadline: "2024-12-14" }
+            { subject: "Математика", task: "Решить №345-350, подготовиться к контрольной", deadline: "2025-02-15" },
+            { subject: "Русский язык", task: "Написать сочинение 'Моя будущая профессия'", deadline: "2025-02-16" },
+            { subject: "Физика", task: "§18-19, ответить на вопросы", deadline: "2025-02-14" },
+            { subject: "Английский", task: "Выучить слова стр. 56, упр. 7", deadline: "2025-02-15" },
+            { subject: "История", task: "Доклад о Тюмени в годы войны", deadline: "2025-02-20" }
         ];
-
-        // Учителя
+        
         const teachersData = [
-            { name: "Иванова Мария Петровна", subject: "Математика", avatar: "📐", email: "m.ivanova@school.ru", room: "203" },
-            { name: "Петров Сергей Викторович", subject: "Физика", avatar: "⚡", email: "s.petrov@school.ru", room: "107" },
-            { name: "Сидорова Анна Алексеевна", subject: "Русский язык", avatar: "📖", email: "a.sidorova@school.ru", room: "215" },
-            { name: "Козлов Дмитрий Иванович", subject: "История", avatar: "🏛️", email: "d.kozlov@school.ru", room: "112" },
-            { name: "Морозова Елена Сергеевна", subject: "Английский", avatar: "🇬🇧", email: "e.morozova@school.ru", room: "208" },
-            { name: "Волков Андрей Николаевич", subject: "Химия", avatar: "🧪", email: "a.volkov@school.ru", room: "105" }
+            { name: "Светлана Викторовна Петрова", subject: "Математика", avatar: "📐", email: "s.petrova@school22.ru", room: "203" },
+            { name: "Алексей Иванович Смирнов", subject: "Физика", avatar: "⚡", email: "a.smirnov@school22.ru", room: "107" },
+            { name: "Марина Дмитриевна Козлова", subject: "Русский язык", avatar: "📖", email: "m.koz@school22.ru", room: "215" },
+            { name: "Ольга Сергеевна Новикова", subject: "Английский", avatar: "🇬🇧", email: "o.novikova@school22.ru", room: "208" },
+            { name: "Дмитрий Владимирович Морозов", subject: "История", avatar: "🏛️", email: "d.morozov@school22.ru", room: "112" },
+            { name: "Елена Андреевна Воробьёва", subject: "Химия", avatar: "🧪", email: "e.vorob@school22.ru", room: "105" },
+            { name: "Иван Петрович Соколов", subject: "Информатика", avatar: "💻", email: "i.sokolov@school22.ru", room: "301" },
+            { name: "Татьяна Николаевна Лебедева", subject: "Биология", avatar: "🌿", email: "t.lebedeva@school22.ru", room: "109" }
         ];
-
-        // Книги
+        
         const booksData = [
-            { title: "Война и мир", author: "Лев Толстой", year: 1869, desc: "Великий роман-эпопея о жизни русского общества в эпоху Наполеоновских войн.", cover: "📚" },
-            { title: "Преступление и наказание", author: "Фёдор Достоевский", year: 1866, desc: "Роман о моральных дилеммах и психологии преступника.", cover: "📖" },
-            { title: "Мастер и Маргарита", author: "Михаил Булгаков", year: 1967, desc: "Мистический роман о любви, добре и зле.", cover: "📘" },
-            { title: "Евгений Онегин", author: "Александр Пушкин", year: 1833, desc: "Роман в стихах о русской жизни XIX века.", cover: "📙" },
-            { title: "1984", author: "Джордж Оруэлл", year: 1949, desc: "Антиутопия о тоталитарном обществе.", cover: "📕" }
+            { title: "Война и мир", author: "Лев Толстой", year: 1869, desc: "Роман-эпопея о жизни русского общества.", cover: "📚" },
+            { title: "Преступление и наказание", author: "Ф. Достоевский", year: 1866, desc: "Моральные дилеммы и психология.", cover: "📖" },
+            { title: "Мастер и Маргарита", author: "М. Булгаков", year: 1967, desc: "Мистический роман о любви и добре.", cover: "📘" },
+            { title: "Тихий Дон", author: "М. Шолохов", year: 1940, desc: "Жизнь донского казачества.", cover: "📙" },
+            { title: "1984", author: "Дж. Оруэлл", year: 1949, desc: "Антиутопия о тоталитаризме.", cover: "📕" }
         ];
-
-        // Новости
+        
         const newsData = [
-            { title: "Олимпиада по математике", date: "2024-12-15", desc: "Приглашаем всех желающих принять участие!" },
-            { title: "День открытых дверей", date: "2024-12-20", desc: "Родители смогут посетить уроки и встретиться с учителями." },
-            { title: "Конкурс рисунков", date: "2024-12-25", desc: "Тема: 'Моя школа будущего'." },
-            { title: "Новый кружок робототехники", date: "2024-12-05", desc: "Начинается набор в кружок. Приходите!" }
+            { title: "Олимпиада по математике", date: "2025-02-20", desc: "Приглашаем всех желающих!" },
+            { title: "День открытых дверей в корпусе 2", date: "2025-02-25", desc: "Родители смогут посетить уроки." },
+            { title: "Конкурс рисунков 'Моя школа'", date: "2025-03-01", desc: "Принимаются работы до 25 февраля." },
+            { title: "Лыжные соревнования", date: "2025-02-18", desc: "Сбор у корпуса 2 в 10:00." }
         ];
-
-        // События
+        
         const eventsData = [
-            { name: "Контрольная по математике", date: "2024-12-10" },
-            { name: "Субботник", date: "2024-12-14" },
-            { name: "Новогодний концерт", date: "2024-12-28" }
+            { name: "Контрольная по физике", date: "2025-02-17" },
+            { name: "Субботник", date: "2025-02-22" },
+            { name: "Праздничный концерт", date: "2025-03-06" }
         ];
-
-        // Отличники
+        
         const topStudentsData = [
-            { name: "Анна Иванова", grade: "10А", avg: 4.9 },
-            { name: "Максим Петров", grade: "10А", avg: 4.8 },
-            { name: "Елена Смирнова", grade: "10Б", avg: 4.7 }
+            { name: "Анна Иванова", grade: "9Б", avg: 4.9 },
+            { name: "Максим Петров", grade: "9Б", avg: 4.8 },
+            { name: "Елена Смирнова", grade: "9А", avg: 4.7 },
+            { name: "Дмитрий Козлов", grade: "9Б", avg: 4.6 }
         ];
-
-        // Карта школы
+        
         const mapRoomsData = [
-            { number: "101", name: "Кабинет математики", floor: 1 },
-            { number: "102", name: "Кабинет физики", floor: 1 },
-            { number: "103", name: "Лаборатория химии", floor: 1 },
-            { number: "104", name: "Библиотека", floor: 1 },
-            { number: "201", name: "Кабинет русского", floor: 2 },
-            { number: "202", name: "Кабинет истории", floor: 2 },
-            { number: "203", name: "Кабинет английского", floor: 2 },
-            { number: "204", name: "Актовый зал", floor: 2 },
-            { number: "301", name: "Кабинет информатики", floor: 3 },
-            { number: "302", name: "Кабинет биологии", floor: 3 },
-            { number: "303", name: "Спортзал", floor: 3 },
-            { number: "304", name: "Столовая", floor: 3 }
+            { number: "101", name: "Кабинет математики", floor: 1 }, { number: "102", name: "Физика", floor: 1 },
+            { number: "103", name: "Химия", floor: 1 }, { number: "104", name: "Библиотека", floor: 1 },
+            { number: "201", name: "Русский язык", floor: 2 }, { number: "202", name: "История", floor: 2 },
+            { number: "203", name: "Английский", floor: 2 }, { number: "204", name: "Актовый зал", floor: 2 },
+            { number: "301", name: "Информатика", floor: 3 }, { number: "302", name: "Биология", floor: 3 },
+            { number: "303", name: "Спортзал", floor: 3 }, { number: "304", name: "Столовая", floor: 3 },
+            { number: "305", name: "Кабинет директора", floor: 3 }
         ];
-
-        // Сообщения чата
+        
         let chatMessages = [
             { name: "Анна Иванова", text: "Всем привет! Кто готов к контрольной?", time: "10:30", avatar: "А" },
-            { name: "Максим Петров", text: "Я не очень, давайте повторим?", time: "10:31", avatar: "М" },
-            { name: "Учитель математики", text: "Ребята, не забывайте про домашнее задание!", time: "10:35", avatar: "👩‍🏫" }
+            { name: "Максим Петров", text: "Повторим после уроков?", time: "10:31", avatar: "М" },
+            { name: "Учитель математики", text: "Напоминаю: дз на пятницу!", time: "10:35", avatar: "👩‍🏫" }
         ];
-
-        // ========== ФУНКЦИИ ОТРИСОВКИ ==========
+        
+        // ========== 3. ФУНКЦИИ ОТРИСОВКИ ==========
         function renderSchedule() {
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-            const dayNames = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница'];
+            const days = ['monday','tuesday','wednesday','thursday','friday','saturday'];
+            const dayNames = ['ПН','ВТ','СР','ЧТ','ПТ','СБ'];
             const tbody = document.getElementById('scheduleBody');
             tbody.innerHTML = '';
-            
-            for (let i = 0; i < 5; i++) {
+            for(let i=0;i<6;i++){ // 6 уроков максимум
                 const row = tbody.insertRow();
-                const cellTime = row.insertCell(0);
-                cellTime.textContent = scheduleData[days[i]][0].time;
-                for (let j = 0; j < 5; j++) {
-                    const cell = row.insertCell(j + 1);
-                    cell.textContent = scheduleData[days[j]][i].subject;
+                const timeCell = row.insertCell(0);
+                timeCell.textContent = scheduleData[days[0]][i]?.time || '';
+                for(let j=0;j<6;j++){
+                    const cell = row.insertCell(j+1);
+                    cell.textContent = scheduleData[days[j]][i]?.subject || '';
                 }
             }
         }
-
+        
         function renderGrades() {
             const container = document.getElementById('gradesContainer');
-            let totalSum = 0;
-            let totalCount = 0;
-            
+            let totalSum=0, totalCount=0;
             container.innerHTML = '<div class="grades-grid"></div>';
             const grid = container.querySelector('.grades-grid');
-            
             gradesData.forEach(subj => {
-                const sum = subj.grades.reduce((a,b) => a + b, 0);
-                const avg = (sum / subj.grades.length).toFixed(1);
+                const sum = subj.grades.reduce((a,b)=>a+b,0);
+                const avg = (sum/subj.grades.length).toFixed(1);
                 totalSum += sum;
                 totalCount += subj.grades.length;
-                
-                const div = document.createElement('div');
-                div.className = 'grade-item';
-                div.innerHTML = `
-                    <div class="grade-subject">${subj.subject}</div>
-                    <div class="grade-value">${avg}</div>
-                    <div style="font-size: 11px;">${subj.grades.join(', ')}</div>
-                `;
+                const div = document.createElement('div'); div.className='grade-item';
+                div.innerHTML = `<div class="grade-subject">${subj.subject}</div><div class="grade-value">${avg}</div><div style="font-size:11px;">${subj.grades.join(', ')}</div>`;
                 grid.appendChild(div);
             });
-            
-            const avgTotal = (totalSum / totalCount).toFixed(2);
-            document.getElementById('averageGrade').textContent = avgTotal;
+            document.getElementById('averageGrade').innerText = (totalSum/totalCount).toFixed(2);
         }
-
+        
         function renderHomework() {
-            const container = document.getElementById('homeworkList');
-            container.innerHTML = homeworkData.map(hw => `
-                <li class="homework-item">
-                    <div>
-                        <div class="homework-subject">${hw.subject}</div>
-                        <div>${hw.task}</div>
-                    </div>
-                    <div class="homework-deadline">⏰ ${hw.deadline}</div>
-                </li>
+            document.getElementById('homeworkList').innerHTML = homeworkData.map(hw => `
+                <li class="homework-item"><div><div class="homework-subject">${hw.subject}</div><div>${hw.task}</div></div><div class="homework-deadline">⏰ ${hw.deadline}</div></li>
             `).join('');
         }
-
+        
         function renderTeachers() {
-            const container = document.getElementById('teachersGrid');
-            container.innerHTML = teachersData.map(teacher => `
-                <div class="teacher-card">
-                    <div class="teacher-avatar">${teacher.avatar}</div>
-                    <div class="teacher-name">${teacher.name}</div>
-                    <div class="teacher-subject">${teacher.subject}</div>
-                    <div style="font-size: 12px; margin-top: 10px;">📧 ${teacher.email}<br>🏠 каб. ${teacher.room}</div>
-                </div>
+            document.getElementById('teachersGrid').innerHTML = teachersData.map(t => `
+                <div class="teacher-card"><div class="teacher-avatar">${t.avatar}</div><div class="teacher-name">${t.name}</div><div class="teacher-subject">${t.subject}</div><div style="font-size:12px; margin-top:10px;">📧 ${t.email}<br>🏠 каб. ${t.room}</div></div>
             `).join('');
         }
-
+        
         function renderLibrary() {
             const container = document.getElementById('libraryGrid');
-            container.innerHTML = booksData.map((book, index) => `
-                <div class="book-card" data-index="${index}">
-                    <div class="book-cover">${book.cover}</div>
-                    <div class="book-title">${book.title}</div>
-                    <div class="book-author">${book.author}</div>
-                </div>
-            `).join('');
-            
+            container.innerHTML = booksData.map((book,idx) => `<div class="book-card" data-index="${idx}"><div class="book-cover">${book.cover}</div><div class="book-title">${book.title}</div><div class="book-author">${book.author}</div></div>`).join('');
             document.querySelectorAll('.book-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const index = card.dataset.index;
-                    const book = booksData[index];
-                    document.getElementById('modalBookTitle').textContent = book.title;
-                    document.getElementById('modalBookAuthor').innerHTML = `<strong>Автор:</strong> ${book.author}`;
-                    document.getElementById('modalBookDesc').innerHTML = `<strong>Описание:</strong> ${book.desc}`;
-                    document.getElementById('modalBookYear').innerHTML = `<strong>Год:</strong> ${book.year}`;
+                card.addEventListener('click',()=>{
+                    const idx = card.dataset.index;
+                    const b = booksData[idx];
+                    document.getElementById('modalBookTitle').innerText = b.title;
+                    document.getElementById('modalBookAuthor').innerHTML = `<strong>Автор:</strong> ${b.author}`;
+                    document.getElementById('modalBookDesc').innerHTML = `<strong>Описание:</strong> ${b.desc}`;
+                    document.getElementById('modalBookYear').innerHTML = `<strong>Год:</strong> ${b.year}`;
                     document.getElementById('bookModal').style.display = 'flex';
                 });
             });
         }
-
+        
         function renderNews() {
-            const container = document.getElementById('newsList');
-            container.innerHTML = newsData.map(news => `
-                <div class="news-item">
-                    <div class="news-title">${news.title}</div>
-                    <div class="news-date">📅 ${news.date}</div>
-                    <div style="font-size: 13px; margin-top: 5px;">${news.desc}</div>
-                </div>
-            `).join('');
+            document.getElementById('newsList').innerHTML = newsData.map(n => `<div class="news-item" style="padding:12px 0; border-bottom:0.5px solid rgba(255,255,255,0.1);"><div class="news-title">${n.title}</div><div class="news-date">📅 ${n.date}</div><div style="font-size:13px;">${n.desc}</div></div>`).join('');
         }
-
+        
         function renderTopStudents() {
-            const container = document.getElementById('topStudents');
-            container.innerHTML = topStudentsData.map(s => `
-                <div style="padding: 10px; border-bottom: 1px solid #eee;">
-                    <strong>${s.name}</strong> (${s.grade}) - средний балл ${s.avg}
-                </div>
-            `).join('');
+            document.getElementById('topStudents').innerHTML = topStudentsData.map(s => `<div style="padding:10px 0; border-bottom:0.5px solid rgba(255,255,255,0.1);"><strong>${s.name}</strong> (${s.grade}) — ср.балл ${s.avg}</div>`).join('');
         }
-
+        
         function renderEvents() {
-            const container = document.getElementById('eventsList');
-            container.innerHTML = eventsData.map(e => `
-                <div style="padding: 10px; border-bottom: 1px solid #eee;">
-                    📌 ${e.name} - ${e.date}
-                </div>
-            `).join('');
+            document.getElementById('eventsList').innerHTML = eventsData.map(e => `<div style="padding:10px 0; border-bottom:0.5px solid rgba(255,255,255,0.1);">📌 ${e.name} — ${e.date}</div>`).join('');
         }
-
+        
         function renderBookOfMonth() {
-            const container = document.getElementById('bookOfMonth');
-            container.innerHTML = `
-                <div style="text-align: center;">
-                    <div style="font-size: 48px;">📘</div>
-                    <div style="font-weight: bold; margin: 10px 0;">"Война и мир"</div>
-                    <div>Лев Толстой</div>
-                    <div style="font-size: 12px; color: #666; margin-top: 10px;">Читают 47 учеников в этом месяце</div>
-                </div>
-            `;
+            document.getElementById('bookOfMonth').innerHTML = `<div style="text-align:center;"><div style="font-size:48px;">📘</div><div style="font-weight:bold;">"Война и мир"</div><div>Лев Толстой</div><div style="font-size:12px; margin-top:8px;">Читают 52 ученика</div></div>`;
         }
-
-        function renderCurrentLessons() {
-            const now = new Date();
-            const dayIndex = now.getDay();
-            const daysMap = {1: 'monday', 2: 'tuesday', 3: 'wednesday', 4: 'thursday', 5: 'friday'};
-            const currentDay = daysMap[dayIndex];
-            if (currentDay && scheduleData[currentDay]) {
-                const container = document.getElementById('currentLessons');
-                container.innerHTML = `
-                    <div style="margin-bottom: 10px;">📚 Сегодняшние уроки:</div>
-                    ${scheduleData[currentDay].map(lesson => `
-                        <div style="padding: 8px 0; border-bottom: 1px solid #eee;">⏰ ${lesson.time} - ${lesson.subject}</div>
-                    `).join('')}
-                `;
-            } else {
-                document.getElementById('currentLessons').innerHTML = '<div>Выходной! Отдыхайте 🎉</div>';
-            }
-        }
-
+        
         function renderMap() {
             const container = document.getElementById('mapGrid');
-            container.innerHTML = mapRoomsData.map(room => `
-                <div class="map-room" data-room="${room.number}">
-                    <strong>${room.number}</strong><br>
-                    <small>${room.name}</small>
-                </div>
-            `).join('');
-            
+            container.innerHTML = mapRoomsData.map(r => `<div class="map-room" data-room="${r.number}"><strong>${r.number}</strong><br><small>${r.name}</small></div>`).join('');
             document.querySelectorAll('.map-room').forEach(room => {
-                room.addEventListener('click', () => {
-                    alert(`📍 Кабинет ${room.dataset.room}\n${room.querySelector('small').textContent}`);
-                });
+                room.addEventListener('click',()=>alert(`📍 Кабинет ${room.dataset.room}\n${room.querySelector('small').textContent}`));
             });
         }
-
-        function renderWeather() {
-            const temp = Math.floor(Math.random() * 15) + 5;
-            const weathers = ['☀️', '⛅', '☁️', '🌧️', '❄️'];
-            const weather = weathers[Math.floor(Math.random() * weathers.length)];
-            document.getElementById('weatherTemp').innerHTML = `${temp}°C`;
-            document.getElementById('weatherIcon').innerHTML = weather;
+        
+        function renderCurrentLessons() {
+            const daysMap = {1:'monday',2:'tuesday',3:'wednesday',4:'thursday',5:'friday',6:'saturday'};
+            const today = new Date().getDay();
+            const dayKey = daysMap[today];
+            if(dayKey && scheduleData[dayKey]){
+                const lessons = scheduleData[dayKey];
+                document.getElementById('currentLessons').innerHTML = `<div style="margin-bottom:10px;">📚 Уроки на сегодня:</div>`+lessons.map(l=>`<div style="padding:8px 0; border-bottom:0.5px solid rgba(255,255,255,0.1);">⏰ ${l.time} — ${l.subject}</div>`).join('');
+            } else {
+                document.getElementById('currentLessons').innerHTML = '<div>🥳 Выходной! Отдыхайте</div>';
+            }
         }
-
+        
         function renderChat() {
             const container = document.getElementById('chatMessages');
-            container.innerHTML = chatMessages.map(msg => `
-                <div class="message">
-                    <div class="message-avatar">${msg.avatar}</div>
-                    <div class="message-content">
-                        <div class="message-name">${msg.name} <span style="font-size: 10px; color: #999;">${msg.time}</span></div>
-                        <div class="message-text">${msg.text}</div>
-                    </div>
-                </div>
-            `).join('');
+            container.innerHTML = chatMessages.map(msg => `<div class="message"><div class="message-avatar">${msg.avatar}</div><div class="message-content"><div class="message-name">${msg.name} <span style="font-size:10px;">${msg.time}</span></div><div class="message-text">${msg.text}</div></div></div>`).join('');
             container.scrollTop = container.scrollHeight;
         }
-
+        
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
-            if (text) {
+            if(text){
                 const now = new Date();
                 const time = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-                chatMessages.push({
-                    name: "Анна Иванова",
-                    text: text,
-                    time: time,
-                    avatar: "А"
-                });
+                chatMessages.push({ name: "Анна Иванова", text, time, avatar: "А" });
                 renderChat();
                 input.value = '';
             }
         }
-
-        // Калькулятор
-        let calcExpression = '';
-        function updateCalcDisplay() {
-            document.getElementById('calcDisplay').textContent = calcExpression || '0';
-        }
         
-        function setupCalculator() {
-            const buttons = [
-                '7','8','9','/',
-                '4','5','6','*',
-                '1','2','3','-',
-                '0','C','=','+'
-            ];
+        // Калькулятор
+        let calcExpr = '';
+        function setupCalc() {
+            const btns = ['7','8','9','/','4','5','6','*','1','2','3','-','0','C','=','+'];
             const container = document.getElementById('calcButtons');
-            container.innerHTML = buttons.map(btn => `
-                <button class="calc-btn ${btn === '/' || btn === '*' || btn === '-' || btn === '+' ? 'operator' : ''} ${btn === '=' ? 'equals' : ''}" data-value="${btn}">${btn}</button>
-            `).join('');
-            
+            container.innerHTML = btns.map(btn => `<button class="calc-btn ${'/*+-'.includes(btn)?'operator':''} ${btn==='='?'equals':''}" data-val="${btn}">${btn}</button>`).join('');
             container.querySelectorAll('.calc-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const value = btn.dataset.value;
-                    if (value === 'C') {
-                        calcExpression = '';
-                    } else if (value === '=') {
-                        try {
-                            calcExpression = eval(calcExpression).toString();
-                        } catch {
-                            calcExpression = 'Ошибка';
-                        }
-                    } else {
-                        calcExpression += value;
-                    }
-                    updateCalcDisplay();
+                btn.addEventListener('click',()=>{
+                    const val = btn.dataset.val;
+                    if(val === 'C') calcExpr = '';
+                    else if(val === '='){
+                        try { calcExpr = eval(calcExpr).toString(); } catch(e){ calcExpr = 'Ошибка'; }
+                    } else calcExpr += val;
+                    document.getElementById('calcDisplay').innerText = calcExpr || '0';
                 });
             });
         }
-
+        
+        // Настройки: сохранение имени, класса, школы
+        function loadUserSettings() {
+            const name = localStorage.getItem('userName') || 'Анна Иванова';
+            const className = localStorage.getItem('userClass') || '9 Б';
+            const school = localStorage.getItem('userSchool') || 'Школа №22, корпус 2, Тюмень';
+            document.getElementById('userName').value = name;
+            document.getElementById('userClass').value = className;
+            document.getElementById('userSchool').value = school;
+            document.querySelector('.user-info span').innerHTML = `${name}<br><small>${className} класс</small>`;
+        }
+        function saveUserSettings() {
+            const name = document.getElementById('userName').value;
+            const className = document.getElementById('userClass').value;
+            const school = document.getElementById('userSchool').value;
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userClass', className);
+            localStorage.setItem('userSchool', school);
+            document.querySelector('.user-info span').innerHTML = `${name}<br><small>${className} класс</small>`;
+            alert('Настройки сохранены!');
+        }
+        
+        // Темы оформления
+        function applyTheme(theme) {
+            document.body.classList.remove('theme-cherry','theme-ocean','theme-purple','theme-gold');
+            if(theme !== 'default') document.body.classList.add(`theme-${theme}`);
+            localStorage.setItem('siteTheme', theme);
+        }
+        function loadTheme() {
+            const saved = localStorage.getItem('siteTheme') || 'default';
+            applyTheme(saved);
+        }
+        
         // Навигация
-        function setupNavigation() {
+        function setupNav() {
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click',()=>{
                     const pageId = btn.dataset.page;
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
                     btn.classList.add('active');
-                    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+                    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
                     document.getElementById(pageId).classList.add('active');
                 });
             });
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click',()=> applyTheme(btn.dataset.theme));
+            });
         }
-
+        
+        // Дата
+        function setCurrentDate() {
+            const now = new Date();
+            document.getElementById('currentDate').innerHTML = now.toLocaleDateString('ru-RU', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+        }
+        
         // Инициализация
-        function init() {
+        async function init() {
+            setCurrentDate();
+            await fetchRealWeather();
             renderSchedule();
             renderGrades();
             renderHomework();
@@ -1106,37 +955,20 @@
             renderEvents();
             renderBookOfMonth();
             renderMap();
-            renderWeather();
-            renderChat();
             renderCurrentLessons();
-            setupCalculator();
-            setupNavigation();
-            
-            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            
+            renderChat();
+            setupCalc();
+            setupNav();
+            loadUserSettings();
+            loadTheme();
             document.getElementById('chatSendBtn').addEventListener('click', sendMessage);
-            document.getElementById('chatInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage();
-            });
-            
-            document.querySelector('.close-modal').addEventListener('click', () => {
-                document.getElementById('bookModal').style.display = 'none';
-            });
-            
-            document.getElementById('borrowBookBtn').addEventListener('click', () => {
-                alert('✅ Книга добавлена в ваш читательский билет! Приходите в библиотеку.');
-                document.getElementById('bookModal').style.display = 'none';
-            });
-            
-            window.addEventListener('click', (e) => {
-                if (e.target === document.getElementById('bookModal')) {
-                    document.getElementById('bookModal').style.display = 'none';
-                }
-            });
-            
-            setInterval(() => {
-                renderWeather();
-            }, 60000);
+            document.getElementById('chatInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage(); });
+            document.getElementById('saveSettingsBtn').addEventListener('click', saveUserSettings);
+            const modal = document.getElementById('bookModal');
+            document.querySelector('.close-modal').addEventListener('click',()=>modal.style.display='none');
+            document.getElementById('borrowBookBtn').addEventListener('click',()=>{ alert('✅ Книга добавлена в ваш читательский билет!'); modal.style.display='none'; });
+            window.addEventListener('click',(e)=>{ if(e.target===modal) modal.style.display='none'; });
+            setInterval(fetchRealWeather, 600000); // обновление погоды каждые 10 мин
         }
         
         init();
