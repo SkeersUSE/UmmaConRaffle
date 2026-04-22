@@ -12,671 +12,785 @@
         }
 
         body {
-            min-height: 100vh;
-            background: radial-gradient(circle at 30% 20%, #1a1a2e, #0a0a15, #030308);
-            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-            padding: 16px;
-            color: white;
+            min-height: 100vh;<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Shadow School — хоррор в заброшенной школе</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'SF Pro Display', -apple-system, 'Arial', sans-serif;
         }
 
-        .glass {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 48px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        /* Шапка */
-        .header {
-            text-align: center;
-            padding: 24px 20px;
-            margin-bottom: 16px;
-        }
-        h1 {
-            font-size: 32px;
-            font-weight: 590;
-            background: linear-gradient(135deg, #fff, #aaa);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .sub {
-            color: rgba(255,255,255,0.5);
-            font-size: 13px;
-            margin-top: 6px;
-        }
-
-        /* Профиль */
-        .profile-card {
-            padding: 16px 20px;
-            margin-bottom: 16px;
+        /* UI панель */
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.5));
+            backdrop-filter: blur(12px);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 100;
+            pointer-events: none;
+            border-bottom: 1px solid rgba(255,0,0,0.3);
+            font-weight: 500;
         }
-        .user-info {
+
+        .stats {
+            display: flex;
+            gap: 25px;
+            color: white;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .stat {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
+            font-size: 14px;
+            background: rgba(0,0,0,0.5);
+            padding: 6px 15px;
+            border-radius: 30px;
         }
-        .avatar {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+
+        .health-bar {
+            width: 150px;
+            height: 10px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ff6666);
+            border-radius: 5px;
+            transition: width 0.2s;
+        }
+
+        .stamina-bar {
+            width: 150px;
+            height: 10px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .stamina-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #44ff88, #66ffaa);
+            border-radius: 5px;
+            transition: width 0.2s;
+        }
+
+        #objective {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #ffaa66;
+            border-left: 3px solid #ffaa66;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #flashlightUI {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.6);
             border-radius: 50%;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-        }
-        .tickets-count {
-            background: rgba(255,215,0,0.15);
-            border-radius: 60px;
-            padding: 8px 16px;
-            font-weight: 600;
-            color: #ffd966;
-        }
-
-        /* Розыгрыш */
-        .raffle-card {
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-        .raffle-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .raffle-prize {
-            color: #ffd966;
-            font-size: 16px;
-        }
-        .raffle-stats {
-            display: flex;
-            gap: 16px;
-            margin: 12px 0;
-            font-size: 13px;
-            color: rgba(255,255,255,0.6);
-            flex-wrap: wrap;
-        }
-        .participants-count {
-            color: #4ecdc4;
-            font-weight: 600;
-        }
-        .progress-bar {
-            height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            margin: 12px 0;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ffd966, #ffaa00);
-            border-radius: 3px;
-            transition: width 0.3s;
-        }
-        .join-btn {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05));
-            border: 0.5px solid rgba(255,215,0,0.4);
-            padding: 14px;
-            border-radius: 60px;
-            font-weight: 600;
+            font-size: 28px;
             cursor: pointer;
-            color: #ffd966;
-            margin-top: 12px;
-            font-size: 16px;
-        }
-        .join-btn:active { transform: scale(0.97); }
-        .join-btn.disabled {
-            opacity: 0.5;
-            pointer-events: none;
+            z-index: 100;
+            pointer-events: auto;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: 0.1s;
         }
 
-        /* Мои билеты */
-        .my-tickets {
-            padding: 20px;
-            margin-top: 16px;
+        #flashlightUI:active {
+            transform: scale(0.95);
         }
-        .ticket {
-            display: inline-block;
-            background: rgba(255,255,255,0.1);
-            border-radius: 60px;
-            padding: 6px 14px;
-            margin: 4px;
-            font-size: 12px;
+
+        #gameStatus {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px 60px;
+            border-radius: 30px;
+            text-align: center;
+            z-index: 200;
+            display: none;
+            border: 2px solid #ff4444;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        #gameStatus h2 {
+            color: #ff4444;
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        #gameStatus button {
+            background: linear-gradient(135deg, #ff4444, #aa2222);
+            border: none;
+            padding: 12px 35px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        #controlsHint {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            pointer-events: none;
+            z-index: 100;
             font-family: monospace;
         }
 
-        /* Победители */
-        .winners-list {
-            padding: 20px;
-            margin-top: 16px;
-        }
-        .winner-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 0.5px solid rgba(255,255,255,0.1);
-        }
-        .ended-raffle {
-            margin-top: 16px;
-            padding: 16px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 32px;
-        }
-
-        /* Кнопка доната */
-        .donate-btn {
-            display: block;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05));
-            border: 0.5px solid rgba(255,215,0,0.4);
-            padding: 14px;
-            border-radius: 60px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #ffd966;
-            margin: 20px 0 12px;
-        }
-        .support-text {
-            text-align: center;
-            color: rgba(255,255,255,0.4);
-            font-size: 12px;
-            margin-bottom: 16px;
-        }
-        .toast {
+        .sanity-effect {
             position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(20px);
-            padding: 10px 20px;
-            border-radius: 60px;
-            color: white;
-            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
             display: none;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: rgba(255,255,255,0.4);
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            padding: 0 4px;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <!-- Шапка -->
-    <div class="glass header">
-        <h1>🎁 Liquid Raffle</h1>
-        <div class="sub">участвуй в розыгрышах • выигрывай призы</div>
-    </div>
-
-    <!-- Профиль -->
-    <div class="glass profile-card">
-        <div class="user-info">
-            <div class="avatar" id="userAvatar">👤</div>
-            <div>
-                <div id="userName">Загрузка...</div>
-                <div style="font-size: 11px; color: rgba(255,255,255,0.4);" id="userUsername">@username</div>
-            </div>
+    <div id="ui">
+        <div class="stats">
+            <div class="stat">❤️ Здоровье <div class="health-bar"><div class="health-fill" id="healthFill"></div></div></div>
+            <div class="stat">⚡ Выносливость <div class="stamina-bar"><div class="stamina-fill" id="staminaFill"></div></div></div>
         </div>
-        <div class="tickets-count" id="ticketsCount">🎫 0</div>
+        <div class="stat">📜 Записок: <span id="notesCount">0</span>/5</div>
     </div>
 
-    <!-- Активные розыгрыши -->
-    <div class="section-title">🎯 Активные розыгрыши</div>
-    <div id="rafflesContainer"></div>
-
-    <!-- Мои билеты -->
-    <div class="glass my-tickets" id="myTicketsSection" style="display: none;">
-        <div style="margin-bottom: 12px;">🎫 Мои билеты</div>
-        <div id="myTicketsList"></div>
+    <div id="objective">
+        🕯️ Найди 5 страниц дневника и сбеги из школы...
     </div>
 
-    <!-- Завершённые розыгрыши -->
-    <div class="section-title" id="endedTitle" style="display: none;">🏆 Завершённые розыгрыши</div>
-    <div id="endedRafflesContainer"></div>
-
-    <!-- Кнопка доната -->
-    <a href="https://www.donationalerts.com/r/ваша_ссылка" target="_blank" class="donate-btn">
-        ☕️ Поддержать проект
-    </a>
-    <div class="support-text">
-        💙 Ваша поддержка = больше призов и розыгрышей!
+    <div id="flashlightUI">
+        🔦
     </div>
-</div>
-<div id="toast" class="toast"></div>
 
-<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-<script>
-    // ========== TELEGRAM WEBAPP ==========
-    let tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.enableClosingConfirmation();
-    
-    // Получаем данные пользователя из Telegram
-    let user = tg.initDataUnsafe?.user || {
-        id: Math.floor(Math.random() * 1000000),
-        first_name: "Гость",
-        username: "guest"
-    };
-    
-    document.getElementById('userName').innerText = user.first_name || "Участник";
-    document.getElementById('userUsername').innerText = user.username ? `@${user.username}` : "@unknown";
-    document.getElementById('userAvatar').innerText = user.first_name ? user.first_name[0].toUpperCase() : "👤";
-    
-    let userId = `tg_${user.id}`;
-    
-    // ========== НАЧАЛЬНЫЕ ДАННЫЕ ==========
-    // Активные розыгрыши (можно менять и добавлять через консоль)
-    let activeRaffles = [
+    <div id="gameStatus">
+        <h2 id="statusTitle">💀 ВЫ УМЕРЛИ 💀</h2>
+        <p id="statusMessage">Тьма поглотила вас...</p>
+        <button id="restartBtn">🔄 Начать заново</button>
+    </div>
+
+    <div id="controlsHint">
+        🖱️ Мышь — осмотр | WASD — движение | 🔦 Фонарик — нажатие
+    </div>
+
+    <div class="sanity-effect" id="sanityEffect"></div>
+
+    <script type="importmap">
         {
-            id: "raffle_1",
-            title: "💰 10 000 рублей",
-            prize: "10 000 ₽",
-            prizeValue: 10000,
-            winnersCount: 3,
-            maxParticipants: 100,
-            endTime: Date.now() + 3 * 24 * 60 * 60 * 1000,
-            participants: [],
-            tickets: [],
-            isActive: true,
-            winners: []
-        },
-        {
-            id: "raffle_2",
-            title: "📱 iPhone 16",
-            prize: "iPhone 16 128GB",
-            prizeValue: 80000,
-            winnersCount: 1,
-            maxParticipants: 200,
-            endTime: Date.now() + 5 * 24 * 60 * 60 * 1000,
-            participants: [],
-            tickets: [],
-            isActive: true,
-            winners: []
-        },
-        {
-            id: "raffle_3",
-            title: "🎧 AirPods Pro 2",
-            prize: "AirPods Pro 2",
-            prizeValue: 25000,
-            winnersCount: 2,
-            maxParticipants: 50,
-            endTime: Date.now() + 2 * 24 * 60 * 60 * 1000,
-            participants: [],
-            tickets: [],
-            isActive: true,
-            winners: []
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
         }
-    ];
-    
-    let endedRaffles = [];
-    let userTickets = [];
-    let ticketsMap = {};
-    
-    // ========== ЗАГРУЗКА/СОХРАНЕНИЕ ==========
-    function loadData() {
-        const saved = localStorage.getItem(`liquid_raffle_${userId}`);
-        if (saved) {
-            try {
-                const data = JSON.parse(saved);
-                userTickets = data.userTickets || [];
-                ticketsMap = data.ticketsMap || {};
-                
-                // Восстанавливаем участников розыгрышей
-                if (data.activeRaffles) {
-                    activeRaffles.forEach((raffle, idx) => {
-                        if (data.activeRaffles[idx]) {
-                            raffle.participants = data.activeRaffles[idx].participants || [];
-                            raffle.tickets = data.activeRaffles[idx].tickets || [];
-                            raffle.winners = data.activeRaffles[idx].winners || [];
-                        }
-                    });
-                }
-                if (data.endedRaffles) endedRaffles = data.endedRaffles;
-            } catch(e) {}
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+        // ========== НАСТРОЙКИ ==========
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510);
+        scene.fog = new THREE.FogExp2(0x050510, 0.03);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 100);
+        camera.position.set(0, 1.6, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+        
+        // CSS2 для текстов
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+        
+        // ========== ОСВЕЩЕНИЕ ==========
+        // Ambient (очень тёмный)
+        const ambientLight = new THREE.AmbientLight(0x111122, 0.3);
+        scene.add(ambientLight);
+        
+        // Основной свет (луна)
+        const moonLight = new THREE.DirectionalLight(0x88aaff, 0.4);
+        moonLight.position.set(5, 15, -5);
+        moonLight.castShadow = true;
+        scene.add(moonLight);
+        
+        // Фонарик (позже добавим)
+        let flashlight = new THREE.SpotLight(0xffaa66, 0.8);
+        flashlight.castShadow = true;
+        flashlight.angle = 0.4;
+        flashlight.penumbra = 0.3;
+        flashlight.distance = 15;
+        flashlight.decay = 1;
+        scene.add(flashlight);
+        
+        // Дополнительный свет от свечения
+        const candleLight = new THREE.PointLight(0xff6600, 0.3);
+        candleLight.position.set(0, 1, 0);
+        scene.add(candleLight);
+        
+        let flashlightOn = true;
+        
+        // ========== ЗДАНИЕ ШКОЛЫ ==========
+        // Коридор
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x332222, roughness: 0.7, metalness: 0.1 });
+        
+        // Пол
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.y = -0.05;
+        floor.receiveShadow = true;
+        scene.add(floor);
+        
+        // Стены
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x442222, roughness: 0.6, metalness: 0.05 });
+        
+        // Задняя стена
+        const backWall = new THREE.Mesh(new THREE.BoxGeometry(30, 5, 0.3), wallMat);
+        backWall.position.set(0, 2.5, -12);
+        backWall.receiveShadow = true;
+        scene.add(backWall);
+        
+        // Передняя стена
+        const frontWall = new THREE.Mesh(new THREE.BoxGeometry(30, 5, 0.3), wallMat);
+        frontWall.position.set(0, 2.5, 12);
+        frontWall.receiveShadow = true;
+        scene.add(frontWall);
+        
+        // Левая стена
+        const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 24), wallMat);
+        leftWall.position.set(-12, 2.5, 0);
+        leftWall.receiveShadow = true;
+        scene.add(leftWall);
+        
+        // Правая стена
+        const rightWall = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 24), wallMat);
+        rightWall.position.set(12, 2.5, 0);
+        rightWall.receiveShadow = true;
+        scene.add(rightWall);
+        
+        // Потолок (тёмный)
+        const ceilingMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9, metalness: 0.0 });
+        const ceiling = new THREE.Mesh(new THREE.BoxGeometry(30, 0.2, 24), ceilingMat);
+        ceiling.position.set(0, 4.5, 0);
+        ceiling.castShadow = true;
+        scene.add(ceiling);
+        
+        // Колонны
+        const pillarMat = new THREE.MeshStandardMaterial({ color: 0x553333, roughness: 0.4 });
+        for (let i = -8; i <= 8; i+=4) {
+            const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 4, 0.6), pillarMat);
+            pillar.position.set(i, 2, -8);
+            pillar.castShadow = true;
+            scene.add(pillar);
+            
+            const pillar2 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 4, 0.6), pillarMat);
+            pillar2.position.set(i, 2, 8);
+            pillar2.castShadow = true;
+            scene.add(pillar2);
         }
         
-        updateUserTicketsDisplay();
-        checkAndEndRaffles();
-        render();
-    }
-    
-    function saveData() {
-        localStorage.setItem(`liquid_raffle_${userId}`, JSON.stringify({
-            userTickets: userTickets,
-            ticketsMap: ticketsMap,
-            activeRaffles: activeRaffles.map(r => ({
-                participants: r.participants,
-                tickets: r.tickets,
-                winners: r.winners
-            })),
-            endedRaffles: endedRaffles
-        }));
-    }
-    
-    // ========== УЧАСТИЕ В РОЗЫГРЫШЕ ==========
-    function joinRaffle(raffleId) {
-        const raffle = activeRaffles.find(r => r.id === raffleId);
-        if (!raffle || !raffle.isActive) {
-            showToast("❌ Розыгрыш уже завершён!");
-            return;
+        // ========== ДЕКОРАЦИИ ==========
+        // Разбросанные парты
+        const deskMat = new THREE.MeshStandardMaterial({ color: 0x8B5A2B, roughness: 0.5 });
+        for (let i = 0; i < 12; i++) {
+            const desk = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.4, 0.6), deskMat);
+            const x = (Math.random() - 0.5) * 18;
+            const z = (Math.random() - 0.5) * 14;
+            if (Math.abs(x) < 3 && Math.abs(z) < 3) continue;
+            desk.position.set(x, 0.2, z);
+            desk.castShadow = true;
+            scene.add(desk);
         }
         
-        if (raffle.participants.includes(userId)) {
-            showToast("✅ Вы уже участвуете в этом розыгрыше!");
-            return;
-        }
-        
-        if (raffle.participants.length >= raffle.maxParticipants) {
-            showToast("❌ Достигнут лимит участников!");
-            return;
-        }
-        
-        // Добавляем участника
-        raffle.participants.push(userId);
-        
-        // Генерируем билет
-        const ticketNumber = Math.floor(Math.random() * 9999) + 1;
-        const ticketId = `${raffleId}_${ticketNumber}_${Date.now()}`;
-        
-        raffle.tickets.push({
-            userId: userId,
-            ticketId: ticketId,
-            ticketNumber: ticketNumber,
-            username: user.username || user.first_name
+        // Свечи на полу
+        const candleMat = new THREE.MeshStandardMaterial({ color: 0xeedd99, emissive: 0xff6600, emissiveIntensity: 0.3 });
+        const candlePositions = [[-5, -3], [-2, -4], [3, -5], [6, -2], [-6, 4], [0, 5], [4, 3]];
+        candlePositions.forEach(pos => {
+            const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 0.4, 6), candleMat);
+            candle.position.set(pos[0], 0.2, pos[1]);
+            candle.castShadow = true;
+            scene.add(candle);
+            
+            const flame = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), new THREE.MeshStandardMaterial({ color: 0xffaa66, emissive: 0xff4400, emissiveIntensity: 0.5 }));
+            flame.position.set(pos[0], 0.5, pos[1]);
+            scene.add(flame);
         });
         
-        userTickets.push(ticketId);
-        ticketsMap[ticketId] = {
-            raffleId: raffleId,
-            ticketNumber: ticketNumber,
-            raffleTitle: raffle.title
+        // ========== ПРЕДМЕТЫ (ЗАПИСКИ) ==========
+        let notes = [];
+        let notesCollected = 0;
+        
+        const noteMat = new THREE.MeshStandardMaterial({ color: 0xeedd99, emissive: 0xaa8844, emissiveIntensity: 0.2 });
+        const notePositions = [
+            { x: -5, z: -4, text: "Дневник: 3 сентября... Я чувствую, что за мной кто-то следит..." },
+            { x: 3, z: -6, text: "Дневник: 15 сентября... Учителя исчезают один за другим..." },
+            { x: -2, z: 5, text: "Дневник: 1 октября... В подвале что-то есть. Я слышу шаги..." },
+            { x: 7, z: 2, text: "Дневник: 20 октября... Оно меня видит. Я должен бежать..." },
+            { x: -7, z: -1, text: "Дневник: 31 октября... Ключ от выхода в библиотеке. Спасите меня!" }
+        ];
+        
+        notePositions.forEach((pos, i) => {
+            const note = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.05, 0.3), noteMat);
+            note.position.set(pos.x, 0.1, pos.z);
+            note.castShadow = true;
+            scene.add(note);
+            
+            // Свечение
+            const glow = new THREE.PointLight(0xffaa66, 0.3, 2);
+            glow.position.set(pos.x, 0.3, pos.z);
+            scene.add(glow);
+            
+            notes.push({ mesh: note, glow: glow, text: pos.text, collected: false, x: pos.x, z: pos.z });
+        });
+        
+        // ========== МОНСТР ==========
+        let monster = null;
+        let monsterActive = false;
+        let monsterAnger = 0;
+        
+        function createMonster() {
+            const group = new THREE.Group();
+            
+            // Тело
+            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0x221111, emissive: 0x330000, emissiveIntensity: 0.2, roughness: 0.3 }));
+            body.castShadow = true;
+            group.add(body);
+            
+            // Голова
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), new THREE.MeshStandardMaterial({ color: 0x331111, emissive: 0x440000 }));
+            head.position.y = 0.9;
+            head.castShadow = true;
+            group.add(head);
+            
+            // Глаза
+            const eyeMat = new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.5 });
+            const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), eyeMat);
+            leftEye.position.set(-0.2, 1.05, 0.45);
+            group.add(leftEye);
+            
+            const rightEye = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), eyeMat);
+            rightEye.position.set(0.2, 1.05, 0.45);
+            group.add(rightEye);
+            
+            // Руки-когти
+            const clawMat = new THREE.MeshStandardMaterial({ color: 0x441111 });
+            const leftClaw = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.05, 0.6, 4), clawMat);
+            leftClaw.position.set(-0.6, 0.5, 0);
+            group.add(leftClaw);
+            
+            const rightClaw = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.05, 0.6, 4), clawMat);
+            rightClaw.position.set(0.6, 0.5, 0);
+            group.add(rightClaw);
+            
+            group.position.set(8, 0, 6);
+            scene.add(group);
+            return group;
+        }
+        
+        monster = createMonster();
+        
+        // ========== ВЫХОД ==========
+        const exitDoor = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.5, 0.2), new THREE.MeshStandardMaterial({ color: 0x8B5A2B, emissive: 0x442200 }));
+        exitDoor.position.set(0, 1.2, 11.8);
+        exitDoor.castShadow = true;
+        scene.add(exitDoor);
+        
+        const exitGlow = new THREE.PointLight(0x44ff66, 0.5, 5);
+        exitGlow.position.set(0, 1.5, 11.5);
+        scene.add(exitGlow);
+        
+        let exitUnlocked = false;
+        
+        // ========== ИГРОК ==========
+        let player = {
+            x: 0, z: 0,
+            health: 100,
+            stamina: 100,
+            isRunning: false,
+            invincibleTimer: 0
         };
         
-        saveData();
-        updateUserTicketsDisplay();
-        render();
-        showToast(`🎫 Участие принято! Ваш билет: #${ticketNumber}`);
+        let keys = { w: false, s: false, a: false, d: false, shift: false };
         
-        // Отправляем данные в Telegram бот
-        tg.sendData(JSON.stringify({
-            action: "join",
-            raffleId: raffleId,
-            raffleTitle: raffle.title,
-            userId: userId,
-            username: user.username || user.first_name,
-            ticketNumber: ticketNumber
-        }));
-    }
-    
-    // ========== ПРОВЕРКА ЗАВЕРШЕНИЯ РОЗЫГРЫШЕЙ ==========
-    function checkAndEndRaffles() {
-        const now = Date.now();
-        let changed = false;
+        // ========== УПРАВЛЕНИЕ ==========
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'w') keys.w = true;
+            if (e.key === 's') keys.s = true;
+            if (e.key === 'a') keys.a = true;
+            if (e.key === 'd') keys.d = true;
+            if (e.key === 'Shift') keys.shift = true;
+        });
         
-        for (let i = activeRaffles.length - 1; i >= 0; i--) {
-            const raffle = activeRaffles[i];
-            const timeEnded = now >= raffle.endTime;
-            const participantsFull = raffle.participants.length >= raffle.maxParticipants;
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'w') keys.w = false;
+            if (e.key === 's') keys.s = false;
+            if (e.key === 'a') keys.a = false;
+            if (e.key === 'd') keys.d = false;
+            if (e.key === 'Shift') keys.shift = false;
+        });
+        
+        // Мышь для камеры
+        let mouseX = 0, mouseY = 0;
+        let cameraRotationX = 0, cameraRotationY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            if (document.pointerLockElement === renderer.domElement) {
+                mouseX += e.movementX * 0.002;
+                mouseY += e.movementY * 0.002;
+                cameraRotationX = Math.min(Math.max(mouseY, -1.2), 1.2);
+                cameraRotationY = mouseX;
+            }
+        });
+        
+        renderer.domElement.addEventListener('click', () => {
+            renderer.domElement.requestPointerLock();
+        });
+        
+        // Фонарик
+        document.getElementById('flashlightUI').addEventListener('click', () => {
+            flashlightOn = !flashlightOn;
+            flashlight.intensity = flashlightOn ? 0.8 : 0;
+            document.getElementById('flashlightUI').style.opacity = flashlightOn ? '1' : '0.5';
+        });
+        
+        // ========== ДВИЖЕНИЕ ==========
+        function updateMovement(deltaTime) {
+            let speed = 3.5;
+            let staminaCost = 0;
             
-            if (timeEnded || participantsFull) {
-                const winners = determineWinners(raffle);
-                raffle.winners = winners;
-                raffle.isActive = false;
-                
-                endedRaffles.unshift({
-                    ...raffle,
-                    endedAt: now,
-                    endReason: timeEnded ? "⏰ Время вышло" : "👥 Лимит участников"
-                });
-                
-                activeRaffles.splice(i, 1);
-                changed = true;
-                
-                // Уведомляем победителей через бота
-                winners.forEach(winner => {
-                    tg.sendData(JSON.stringify({
-                        action: "win",
-                        raffleId: raffle.id,
-                        raffleTitle: raffle.title,
-                        prize: raffle.prize,
-                        winnerId: winner.userId,
-                        winnerUsername: winner.username,
-                        ticketNumber: winner.ticketNumber
-                    }));
-                });
-                
-                showToast(`🏆 Розыгрыш "${raffle.title}" завершён!`);
+            if (keys.shift && player.stamina > 5) {
+                speed = 6.5;
+                staminaCost = 12 * deltaTime;
+                player.isRunning = true;
+            } else {
+                player.isRunning = false;
+            }
+            
+            let moveX = 0, moveZ = 0;
+            if (keys.w) moveZ -= 1;
+            if (keys.s) moveZ += 1;
+            if (keys.a) moveX -= 1;
+            if (keys.d) moveX += 1;
+            
+            if (moveX !== 0 || moveZ !== 0) {
+                const len = Math.hypot(moveX, moveZ);
+                moveX /= len;
+                moveZ /= len;
+            }
+            
+            // Движение относительно камеры
+            const forward = new THREE.Vector3(-Math.sin(cameraRotationY), 0, -Math.cos(cameraRotationY));
+            const right = new THREE.Vector3(Math.cos(cameraRotationY), 0, -Math.sin(cameraRotationY));
+            
+            let newX = player.x + (moveX * right.x + moveZ * forward.x) * speed * deltaTime;
+            let newZ = player.z + (moveX * right.z + moveZ * forward.z) * speed * deltaTime;
+            
+            // Границы школы
+            newX = Math.min(Math.max(newX, -10), 10);
+            newZ = Math.min(Math.max(newZ, -8), 8);
+            
+            player.x = newX;
+            player.z = newZ;
+            
+            // Выносливость
+            if (staminaCost > 0) {
+                player.stamina = Math.max(0, player.stamina - staminaCost);
+            } else {
+                player.stamina = Math.min(100, player.stamina + 15 * deltaTime);
+            }
+            
+            // Инвинсибилити таймер
+            if (player.invincibleTimer > 0) {
+                player.invincibleTimer -= deltaTime;
+            }
+            
+            // Камера
+            camera.position.x = player.x + Math.sin(cameraRotationY) * 0.5;
+            camera.position.z = player.z + Math.cos(cameraRotationY) * 0.5;
+            camera.position.y = 1.6 + cameraRotationX * 0.3;
+            camera.rotation.order = 'YXZ';
+            camera.rotation.y = cameraRotationY;
+            camera.rotation.x = cameraRotationX;
+            
+            // Фонарик
+            flashlight.position.copy(camera.position);
+            flashlight.target.position.copy(camera.position.clone().add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(5)));
+            scene.add(flashlight.target);
+            
+            // Свечение от свечей
+            candleLight.position.set(player.x, 1, player.z);
+        }
+        
+        // ========== СБОР ЗАПИСОК ==========
+        function checkNotes() {
+            for (let note of notes) {
+                if (!note.collected) {
+                    const dist = Math.hypot(player.x - note.x, player.z - note.z);
+                    if (dist < 1.2) {
+                        note.collected = true;
+                        scene.remove(note.mesh);
+                        scene.remove(note.glow);
+                        notesCollected++;
+                        document.getElementById('notesCount').innerText = notesCollected;
+                        
+                        // Показываем текст записки
+                        const msgDiv = document.createElement('div');
+                        msgDiv.textContent = `📜 ${note.text}`;
+                        msgDiv.style.position = 'fixed';
+                        msgDiv.style.bottom = '100px';
+                        msgDiv.style.left = '50%';
+                        msgDiv.style.transform = 'translateX(-50%)';
+                        msgDiv.style.background = 'rgba(0,0,0,0.9)';
+                        msgDiv.style.color = '#ffaa66';
+                        msgDiv.style.padding = '15px 25px';
+                        msgDiv.style.borderRadius = '12px';
+                        msgDiv.style.borderLeft = '3px solid #ffaa66';
+                        msgDiv.style.zIndex = '300';
+                        msgDiv.style.fontSize = '14px';
+                        msgDiv.style.maxWidth = '80%';
+                        msgDiv.style.textAlign = 'center';
+                        document.body.appendChild(msgDiv);
+                        setTimeout(() => msgDiv.remove(), 4000);
+                        
+                        // Звуковой эффект (вибрация)
+                        if (navigator.vibrate) navigator.vibrate(100);
+                    }
+                }
+            }
+            
+            if (notesCollected >= 5 && !exitUnlocked) {
+                exitUnlocked = true;
+                exitGlow.intensity = 1.5;
+                const msgDiv = document.createElement('div');
+                msgDiv.textContent = '🔑 Выход открыт! Беги к двери!';
+                msgDiv.style.position = 'fixed';
+                msgDiv.style.top = '50%';
+                msgDiv.style.left = '50%';
+                msgDiv.style.transform = 'translate(-50%, -50%)';
+                msgDiv.style.background = 'rgba(0,0,0,0.9)';
+                msgDiv.style.color = '#44ff66';
+                msgDiv.style.padding = '20px 40px';
+                msgDiv.style.borderRadius = '20px';
+                msgDiv.style.fontSize = '20px';
+                msgDiv.style.fontWeight = 'bold';
+                msgDiv.style.zIndex = '300';
+                document.body.appendChild(msgDiv);
+                setTimeout(() => msgDiv.remove(), 3000);
             }
         }
         
-        if (changed) {
-            saveData();
-            render();
-        }
-    }
-    
-    function determineWinners(raffle) {
-        if (raffle.tickets.length === 0) return [];
-        
-        // Перемешиваем билеты
-        const shuffled = [...raffle.tickets];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        
-        // Выбираем уникальных победителей
-        const winners = [];
-        const winnerUserIds = new Set();
-        
-        for (const ticket of shuffled) {
-            if (winners.length >= raffle.winnersCount) break;
-            if (!winnerUserIds.has(ticket.userId)) {
-                winnerUserIds.add(ticket.userId);
-                winners.push({
-                    userId: ticket.userId,
-                    username: ticket.username,
-                    ticketNumber: ticket.ticketNumber,
-                    prize: raffle.prize
+        // ========== МОНСТР AI ==========
+        function updateMonster(deltaTime) {
+            if (!monster) return;
+            
+            const distToPlayer = Math.hypot(monster.position.x - player.x, monster.position.z - player.z);
+            
+            // Монстр активируется после сбора 2 записок
+            if (notesCollected >= 2) {
+                monsterActive = true;
+            }
+            
+            if (monsterActive) {
+                // Агрессия растёт с каждой собранной запиской
+                const speed = 2.5 + notesCollected * 0.3;
+                const dx = player.x - monster.position.x;
+                const dz = player.z - monster.position.z;
+                const dist = Math.hypot(dx, dz);
+                
+                if (dist > 0.5) {
+                    monster.position.x += (dx / dist) * speed * deltaTime;
+                    monster.position.z += (dz / dist) * speed * deltaTime;
+                }
+                
+                // Поворот к игроку
+                const angle = Math.atan2(dx, dz);
+                monster.rotation.y = angle;
+                
+                // Атака
+                if (dist < 1.2 && player.invincibleTimer <= 0) {
+                    player.health -= 25;
+                    player.invincibleTimer = 0.8;
+                    document.getElementById('healthFill').style.width = `${player.health}%`;
+                    
+                    // Эффект удара
+                    const flash = document.createElement('div');
+                    flash.style.position = 'fixed';
+                    flash.style.top = 0;
+                    flash.style.left = 0;
+                    flash.style.width = '100%';
+                    flash.style.height = '100%';
+                    flash.style.background = 'rgba(255,0,0,0.3)';
+                    flash.style.pointerEvents = 'none';
+                    flash.style.zIndex = 150;
+                    document.body.appendChild(flash);
+                    setTimeout(() => flash.remove(), 150);
+                    
+                    if (navigator.vibrate) navigator.vibrate(200);
+                    
+                    if (player.health <= 0) {
+                        gameOver('death');
+                    }
+                }
+                
+                // Эффект свечения глаз при близости
+                const intensity = Math.max(0, 1 - distToPlayer / 5);
+                monster.children.forEach(child => {
+                    if (child.material && child.material.emissiveIntensity) {
+                        child.material.emissiveIntensity = 0.2 + intensity * 0.8;
+                    }
                 });
+            } else {
+                // Монстр бродит случайно
+                monster.position.x += (Math.sin(Date.now() * 0.3) * 0.5) * deltaTime;
+                monster.position.z += (Math.cos(Date.now() * 0.5) * 0.5) * deltaTime;
+                monster.position.x = Math.min(Math.max(monster.position.x, -8), 8);
+                monster.position.z = Math.min(Math.max(monster.position.z, -6), 6);
             }
         }
         
-        return winners;
-    }
-    
-    // ========== ОТРИСОВКА ==========
-    function updateUserTicketsDisplay() {
-        document.getElementById('ticketsCount').innerHTML = `🎫 ${userTickets.length}`;
-        
-        const myTicketsSection = document.getElementById('myTicketsSection');
-        const myTicketsList = document.getElementById('myTicketsList');
-        
-        if (userTickets.length > 0) {
-            myTicketsSection.style.display = 'block';
-            const tickets = userTickets.map(ticketId => {
-                const info = ticketsMap[ticketId];
-                return info ? `${info.raffleTitle} → #${info.ticketNumber}` : ticketId.slice(-6);
-            });
-            myTicketsList.innerHTML = tickets.map(t => `<span class="ticket">🎫 ${t}</span>`).join('');
-        } else {
-            myTicketsSection.style.display = 'none';
-        }
-    }
-    
-    function formatTimeLeft(endTime) {
-        const diff = endTime - Date.now();
-        if (diff <= 0) return "Завершён";
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (86400000)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (3600000)) / (1000 * 60));
-        if (days > 0) return `${days}д ${hours}ч`;
-        if (hours > 0) return `${hours}ч ${minutes}м`;
-        return `${minutes}м`;
-    }
-    
-    function render() {
-        // Активные розыгрыши
-        const container = document.getElementById('rafflesContainer');
-        if (activeRaffles.length === 0) {
-            container.innerHTML = `<div class="glass empty-state">🎉 Нет активных розыгрышей.<br>Загляните позже!</div>`;
-        } else {
-            container.innerHTML = activeRaffles.map(raffle => {
-                const isParticipant = raffle.participants.includes(userId);
-                const percentFull = (raffle.participants.length / raffle.maxParticipants) * 100;
-                const timeLeft = formatTimeLeft(raffle.endTime);
-                
-                return `
-                    <div class="glass raffle-card">
-                        <div class="raffle-title">
-                            <span>${raffle.title}</span>
-                            <span class="raffle-prize">${raffle.prize}</span>
-                        </div>
-                        <div class="raffle-stats">
-                            <span>👥 ${raffle.participants.length}/${raffle.maxParticipants}</span>
-                            <span>🎫 ${raffle.tickets.length} билетов</span>
-                            <span>🏆 ${raffle.winnersCount} побед.</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${percentFull}%;"></div>
-                        </div>
-                        <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px;">
-                            ⏰ ${timeLeft}
-                        </div>
-                        <button class="join-btn ${isParticipant ? 'disabled' : ''}" 
-                                onclick="${isParticipant ? '' : `joinRaffle('${raffle.id}')`}"
-                                ${isParticipant ? 'disabled' : ''}>
-                            ${isParticipant ? '✅ Вы участвуете' : '🎫 Участвовать'}
-                        </button>
-                    </div>
-                `;
-            }).join('');
+        // ========== ВЫХОД ==========
+        function checkExit() {
+            if (exitUnlocked) {
+                const dist = Math.hypot(player.x - 0, player.z - 11.5);
+                if (dist < 1.5) {
+                    gameOver('win');
+                }
+            }
         }
         
-        // Завершённые розыгрыши
-        const endedContainer = document.getElementById('endedRafflesContainer');
-        const endedTitle = document.getElementById('endedTitle');
+        // ========== ИГРА ОКОНЧЕНА ==========
+        function gameOver(reason) {
+            if (reason === 'death') {
+                document.getElementById('statusTitle').innerHTML = '💀 ВЫ УМЕРЛИ 💀';
+                document.getElementById('statusMessage').innerHTML = 'Тьма поглотила вас...';
+            } else if (reason === 'win') {
+                document.getElementById('statusTitle').innerHTML = '🏆 ВЫ ВЫЖИЛИ! 🏆';
+                document.getElementById('statusMessage').innerHTML = 'Вы выбрались из проклятой школы!';
+            }
+            document.getElementById('gameStatus').style.display = 'block';
+            document.exitPointerLock();
+        }
         
-        if (endedRaffles.length === 0) {
-            endedContainer.innerHTML = '';
-            endedTitle.style.display = 'none';
-        } else {
-            endedTitle.style.display = 'block';
-            endedContainer.innerHTML = endedRaffles.map(raffle => `
-                <div class="glass ended-raffle">
-                    <div style="font-weight: 600; margin-bottom: 8px;">${raffle.title}</div>
-                    <div style="font-size: 13px; color: #ffd966; margin-bottom: 8px;">Приз: ${raffle.prize}</div>
-                    <div style="font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 12px;">${raffle.endReason}</div>
-                    <div style="margin-top: 8px;">
-                        ${raffle.winners.map(w => `
-                            <div class="winner-item">
-                                <span>🏆 ${w.username || w.userId.slice(0, 10)}</span>
-                                <span>🎫 #${w.ticketNumber}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
-        }
-    }
-    
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
-    function showToast(msg) {
-        const toast = document.getElementById('toast');
-        toast.textContent = msg;
-        toast.style.display = 'block';
-        setTimeout(() => {
-            toast.style.display = 'none';
-        }, 2000);
-    }
-    
-    // ========== КОМАНДЫ ДЛЯ АДМИНА (в консоли) ==========
-    window.addRaffle = (title, prize, winnersCount, maxParticipants, hoursLeft) => {
-        if (!title || !prize || !winnersCount || !maxParticipants || !hoursLeft) {
-            console.log("❌ Использование: addRaffle('Название', 'Приз', кол-во_победителей, макс_участников, часы)");
-            return;
-        }
-        activeRaffles.push({
-            id: `raffle_${Date.now()}`,
-            title: title,
-            prize: prize,
-            prizeValue: 0,
-            winnersCount: winnersCount,
-            maxParticipants: maxParticipants,
-            endTime: Date.now() + hoursLeft * 60 * 60 * 1000,
-            participants: [],
-            tickets: [],
-            isActive: true,
-            winners: []
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            location.reload();
         });
-        saveData();
-        render();
-        showToast(`✅ Розыгрыш "${title}" добавлен!`);
-    };
-    
-    window.endRaffleNow = (raffleId) => {
-        const raffle = activeRaffles.find(r => r.id === raffleId);
-        if (raffle) {
-            raffle.endTime = Date.now() - 1;
-            checkAndEndRaffles();
-            render();
-            showToast(`🎲 Розыгрыш завершён досрочно!`);
-        } else {
-            showToast(`❌ Розыгрыш с ID "${raffleId}" не найден`);
+        
+        // ========== ЭФФЕКТЫ СТРАХА ==========
+        let fearLevel = 0;
+        function updateFearEffects() {
+            const distToMonster = monster ? Math.hypot(monster.position.x - player.x, monster.position.z - player.z) : 100;
+            fearLevel = Math.max(0, Math.min(1, (1 - distToMonster / 8) * (notesCollected / 5)));
+            
+            // Затемнение по краям
+            const sanityEffect = document.getElementById('sanityEffect');
+            if (fearLevel > 0.3) {
+                sanityEffect.style.display = 'block';
+                sanityEffect.style.background = `radial-gradient(circle, transparent 30%, rgba(0,0,0,${fearLevel * 0.6}) 100%)`;
+            } else {
+                sanityEffect.style.display = 'none';
+            }
+            
+            // Сердцебиение (вибрация)
+            if (fearLevel > 0.5 && navigator.vibrate && Math.random() < 0.02) {
+                navigator.vibrate(50);
+            }
         }
-    };
-    
-    window.addPremiumCode = (code) => {
-        showToast(`✨ Премиум активирован! +1 билет на след. розыгрыш`);
-        // Здесь можно добавить логику для премиум-пользователей
-    };
-    
-    window.showRafflesList = () => {
-        console.log("📋 Активные розыгрыши:");
-        activeRaffles.forEach(r => {
-            console.log(`  - ${r.id}: ${r.title} (${r.participants.length}/${r.maxParticipants} участ.)`);
-        });
-    };
-    
-    // ========== ИНИЦИАЛИЗАЦИЯ ==========
-    loadData();
-    
-    // Проверяем завершение каждую минуту
-    setInterval(() => {
-        checkAndEndRaffles();
-        render();
-    }, 60000);
-    
-    console.log("🎁 Liquid Raffle запущен!");
-    console.log("💡 Команды:");
-    console.log("   addRaffle('Название', 'Приз', победители, макс_участников, часы)");
-    console.log("   endRaffleNow('raffle_id') - завершить розыгрыш");
-    console.log("   showRafflesList() - список активных розыгрышей");
-</script>
+        
+        // ========== UI ОБНОВЛЕНИЕ ==========
+        function updateUI() {
+            document.getElementById('healthFill').style.width = `${player.health}%`;
+            document.getElementById('staminaFill').style.width = `${player.stamina}%`;
+        }
+        
+        // ========== АНИМАЦИЯ ==========
+        let lastTime = 0;
+        
+        function animate(currentTime) {
+            const deltaTime = Math.min(0.033, (currentTime - lastTime) / 1000);
+            lastTime = currentTime;
+            
+            if (deltaTime > 0 && document.getElementById('gameStatus').style.display !== 'block') {
+                updateMovement(deltaTime);
+                checkNotes();
+                updateMonster(deltaTime);
+                checkExit();
+                updateUI();
+                updateFearEffects();
+            }
+            
+            // Анимация свечей
+            const time = Date.now() * 0.005;
+            candleLight.intensity = 0.3 + Math.sin(time) * 0.1;
+            
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        
+        // ========== ЗАПУСК ==========
+        lastTime = performance.now();
+        requestAnimationFrame(animate);
+        
+        console.log('🎮 Shadow School запущена! Найди 5 записок и сбеги от монстра!');
+    </script>
 </body>
 </html>
