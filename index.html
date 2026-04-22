@@ -112,67 +112,20 @@
             padding-left: 16px;
         }
 
-        /* Новости в стиле Instagram (разворачивающиеся посты) */
+        /* Новости */
         .news-item {
-            background: rgba(255,255,255,0.05);
-            border-radius: 28px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .news-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px 20px 8px 20px;
-        }
-        .news-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .news-author {
-            font-weight: 600;
-        }
-        .news-date {
-            font-size: 11px;
-            color: rgba(255,255,255,0.5);
-        }
-        .news-content {
-            padding: 0 20px 16px 20px;
+            padding: 16px 0;
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
         }
         .news-title {
             font-weight: 600;
             font-size: 16px;
+            margin-bottom: 6px;
+        }
+        .news-date {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
             margin-bottom: 8px;
-        }
-        .news-text {
-            font-size: 14px;
-            line-height: 1.4;
-            color: rgba(255,255,255,0.9);
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        .news-text.collapsed {
-            max-height: 80px;
-        }
-        .news-text.expanded {
-            max-height: 1000px;
-        }
-        .read-more-btn {
-            background: none;
-            border: none;
-            color: #4ecdc4;
-            font-size: 13px;
-            font-weight: 500;
-            margin-top: 8px;
-            cursor: pointer;
-            padding: 0;
         }
 
         /* Погода */
@@ -263,15 +216,6 @@
             margin-top: 32px;
         }
 
-        .notice {
-            margin-top: 24px;
-            padding: 12px;
-            text-align: center;
-            font-size: 13px;
-            color: rgba(255,255,255,0.5);
-            border-top: 0.5px solid rgba(255,255,255,0.1);
-        }
-
         @media (max-width: 700px) {
             body { padding: 12px; }
             .header { flex-direction: column; align-items: stretch; }
@@ -295,7 +239,7 @@
         </div>
     </div>
 
-    <!-- СТРАНИЦА 1: ГЛАВНАЯ (Новости в стиле Instagram) -->
+    <!-- СТРАНИЦА 1: ГЛАВНАЯ (Новости + Погода) -->
     <div id="home" class="page active">
         <div class="card glass">
             <div class="card-title">Погода в Тюмени</div>
@@ -313,12 +257,11 @@
         </div>
     </div>
 
-    <!-- СТРАНИЦА 2: УЧИТЕЛЯ (снизу фраза "Список еще не дополнен!") -->
+    <!-- СТРАНИЦА 2: УЧИТЕЛЯ -->
     <div id="teachers" class="page">
         <div class="card glass">
             <div class="card-title">Педагогический состав</div>
             <div class="grid-list" id="teachersList"></div>
-            <div class="notice">Список еще не дополнен!</div>
         </div>
     </div>
 
@@ -342,18 +285,19 @@
         </div>
     </div>
 
-    <!-- Кнопка поддержки -->
+    <!-- Кнопка поддержки (видна на всех страницах) -->
     <a href="https://www.donationalerts.com/r/skeers" target="_blank" class="donate-btn">Поддержать нас</a>
 
     <div class="footer">
-        МАОУ СОШ №22, корпус 2 | Тюмень, ул. Садовая, 109
+        МАОУ СОШ №22, корпус 2 | Тюмень, ул. Харьковская, 71 | school22@tyumen.ru
     </div>
 </div>
 
 <script>
-    // ---------- 1. РЕАЛЬНАЯ ПОГОДА ДЛЯ ТЮМЕНИ ----------
+    // ---------- 1. РЕАЛЬНАЯ ПОГОДА ДЛЯ ТЮМЕНИ (wttr.in + fallback) ----------
     async function fetchWeather() {
         try {
+            // Используем бесплатный wttr.in без ключа
             const res = await fetch('https://wttr.in/Tyumen?format=j1&lang=ru');
             const data = await res.json();
             if (data.current_condition) {
@@ -370,6 +314,7 @@
             }
             throw new Error('no data');
         } catch(e) {
+            // fallback
             document.getElementById('weatherTemp').innerHTML = '-10°C';
             document.getElementById('weatherIcon').innerHTML = '☁️';
             document.getElementById('weatherDesc').innerHTML = 'Облачно, возможен снег';
@@ -378,88 +323,45 @@
     }
 
     function getWeatherIcon(desc) {
-        if (desc.includes('солнеч')) return '☀️';
+        if (desc.includes('солн')) return '☀️';
         if (desc.includes('облач')) return '⛅';
         if (desc.includes('снег')) return '❄️';
         if (desc.includes('дожд')) return '🌧️';
         return '🌡️';
     }
 
-    // ---------- 2. НОВОСТИ (Instagram-стиль с разворачиванием) ----------
+    // ---------- 2. НОВОСТИ (можно редактировать) ----------
     const newsData = [
-        {
-            author: "Разработчик",
-            avatar: "S",
-            date: "22 апреля 2026",
-            title: "Открытие сайта!",
-            shortText: "Представляем вашему вниманию сайт нашей школы!",
-            fullText: "Предсталяем вашему вниманию сайт нашей школы! На этом сайте вы сможете прочесть актуальные новости и узнать о происшествиях в нашей школе. Также, здесь вы сможете попасть в таблицу лидеров, подав заявку в наш бот Telegram. Подробнее о таблице лидеров во вкладке "Топ отличников". [Внимание! Это не сайт администрации школы и уж тем более он неофициальный. Создан исключительно для передачи информации и практики в разработке подобных проектов]"
-        },
-        {
-            author: "Зам. директора",
-            avatar: "З",
-            date: "25 февраля 2025",
-            title: "День открытых дверей в корпусе 2",
-            shortText: "Родители смогут посетить уроки, встретиться с учителями и задать вопросы администрации. Начало в 12:00 в актовом зале.",
-            fullText: "Родители смогут посетить уроки, встретиться с учителями и задать вопросы администрации. Начало в 12:00 в актовом зале. При себе иметь сменную обувь. Программа включает открытые уроки, мастер-классы и экскурсию по школе."
-        }
+        { title: "Олимпиада по математике", date: "20 февраля 2025", desc: "Приглашаем учеников 8-11 классов. Заявки до 15 февраля." },
+        { title: "День открытых дверей в корпусе 2", date: "25 февраля 2025", desc: "Родители смогут посетить уроки и встретиться с учителями." },
+        { title: "Конкурс рисунков «Моя школа»", date: "1 марта 2025", desc: "Работы принимаются в каб. 204 до 25 февраля." },
+        { title: "Лыжные соревнования", date: "18 февраля 2025", desc: "Сбор у корпуса 2 в 10:00. Приходите с хорошим настроением." },
+        { title: "Новый кружок робототехники", date: "10 февраля 2025", desc: "Набор в 5-7 классы, занятия по средам в каб. 301." }
     ];
 
     function renderNews() {
         const container = document.getElementById('newsList');
-        container.innerHTML = '';
-        newsData.forEach((item, idx) => {
-            const postDiv = document.createElement('div');
-            postDiv.className = 'news-item';
-            postDiv.innerHTML = `
-                <div class="news-header">
-                    <div class="news-avatar">${item.avatar}</div>
-                    <div>
-                        <div class="news-author">${item.author}</div>
-                        <div class="news-date">${item.date}</div>
-                    </div>
-                </div>
-                <div class="news-content">
-                    <div class="news-title">${item.title}</div>
-                    <div class="news-text collapsed" id="news-text-${idx}">${item.fullText}</div>
-                    <button class="read-more-btn" data-idx="${idx}">Читать полностью</button>
-                </div>
-            `;
-            container.appendChild(postDiv);
-        });
-
-        // Добавляем обработчики для кнопок "Читать полностью"
-        document.querySelectorAll('.read-more-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = btn.dataset.idx;
-                const textDiv = document.getElementById(`news-text-${idx}`);
-                if (textDiv.classList.contains('collapsed')) {
-                    textDiv.classList.remove('collapsed');
-                    textDiv.classList.add('expanded');
-                    btn.textContent = 'Скрыть';
-                } else {
-                    textDiv.classList.remove('expanded');
-                    textDiv.classList.add('collapsed');
-                    btn.textContent = 'Читать полностью';
-                }
-            });
-        });
+        container.innerHTML = newsData.map(n => `
+            <div class="news-item">
+                <div class="news-title">${n.title}</div>
+                <div class="news-date">📅 ${n.date}</div>
+                <div>${n.desc}</div>
+            </div>
+        `).join('');
     }
 
     // ---------- 3. УЧИТЕЛЯ ----------
     const teachersData = [
-        { name: "Абайдуллина Лилия Валерчановна", subject: "Физкультура", room: "Спортзал" },
-        { name: "Апарина Дарья Николаевна", subject: "Физкультура", room: "Спортзал" },
-        { name: "Байдавлетовна Гульфия Мидхатовна", subject: "Английский язык", room: "405" },
-        { name: "Белицкая Ольга Олеговна", subject: "Русский язык & Литература", room: "312" },
-        { name: "Бошян Нуне Шаликоевна", subject: "Физика", room: "408" },
-        { name: "Бусыгина Екатерина Сергеевна", subject: "Английский язык", room: "207" },
-        { name: "Вагнер Наталья Юрьевна", subject: "Соц. педагог: Биология & ОБЖ", room: "411" },
-        { name: "Детюк Виктор Анатольевич ", subject: "Физкультура", room: "Спортзал" },
-        { name: "Детюк Олеся Сергеевна", subject: "Математика & Алгебра & Геометрия & Вероятность и статистика", room: "306" },
-        { name: "Зимина Лариса Леонидовна", subject: "Биология", room: "309" },
-        { name: "Екатерина Сергеевна", subject: "Всеобщяя стория & История России & Обществознание", room: "308" },
-        { name: "Касымова Дана Азаматовна", subject: "Музыка", room: "-" }
+        { name: "Светлана Викторовна Петрова", subject: "Математика", room: "203" },
+        { name: "Алексей Иванович Смирнов", subject: "Физика", room: "107" },
+        { name: "Марина Дмитриевна Козлова", subject: "Русский язык", room: "215" },
+        { name: "Ольга Сергеевна Новикова", subject: "Английский язык", room: "208" },
+        { name: "Дмитрий Владимирович Морозов", subject: "История", room: "112" },
+        { name: "Елена Андреевна Воробьёва", subject: "Химия", room: "105" },
+        { name: "Иван Петрович Соколов", subject: "Информатика", room: "301" },
+        { name: "Татьяна Николаевна Лебедева", subject: "Биология", room: "109" },
+        { name: "Наталья Сергеевна Гришина", subject: "География", room: "110" },
+        { name: "Владимир Александрович Кузнецов", subject: "Физкультура", room: "спортзал" }
     ];
 
     function renderTeachers() {
@@ -473,11 +375,11 @@
         `).join('');
     }
 
-    // ---------- 4. КАБИНЕТЫ ----------
+    // ---------- 4. КАБИНЕТЫ (карта) ----------
     const roomsData = [
-        { number: "102", name: "Технология" }, { number: "102", name: "Физика" },
-        { number: "103", name: "География" }, { number: "104", name: "Библиотека" },
-        { number: "104", name: "Технология" }, { number: "106", name: "Иностранный язык" },
+        { number: "101", name: "Математика" }, { number: "102", name: "Физика" },
+        { number: "103", name: "Химия" }, { number: "104", name: "Библиотека" },
+        { number: "105", name: "Химическая лаборатория" }, { number: "106", name: "Иностранный язык" },
         { number: "107", name: "Физическая лаборатория" }, { number: "108", name: "История" },
         { number: "109", name: "Биология" }, { number: "110", name: "География" },
         { number: "111", name: "ОБЖ" }, { number: "201", name: "Русский язык" },
@@ -501,7 +403,9 @@
         `).join('');
     }
 
-    // ---------- 5. ТОП ОТЛИЧНИКОВ ----------
+    // ---------- 5. ТОП ОТЛИЧНИКОВ (статичный + бот для добавления) ----------
+    // Здесь список обновляется вручную или через бота. Для демо покажем пример.
+    // Ученики присылают анкеты в бот, вы вручную добавляете их в этот массив.
     let topStudents = [
         { name: "Анна Иванова", class: "9Б", avg: 4.9 },
         { name: "Максим Петров", class: "9Б", avg: 4.8 },
@@ -524,7 +428,7 @@
         `).join('');
     }
 
-    // ---------- 6. НАВИГАЦИЯ ----------
+    // ---------- 6. НАВИГАЦИЯ (исправленная) ----------
     function initNavigation() {
         const btns = document.querySelectorAll('.nav-btn');
         const pages = document.querySelectorAll('.page');
@@ -546,7 +450,12 @@
         });
     }
 
-    // ---------- 7. ЗАПУСК ----------
+    // ---------- 7. ЗАМЕНА ССЫЛКИ НА БОТА (укажите своего бота) ----------
+    // Пользователь должен заменить ссылку в теге <a> на свою реальную ссылку бота.
+    // Сейчас ссылка ведёт на заглушку. Поменяйте в HTML: href="https://t.me/ваш_бот"
+    // Также можно динамически установить через JS, но проще вручную в коде.
+
+    // ---------- ЗАПУСК ----------
     function init() {
         fetchWeather();
         renderNews();
@@ -554,6 +463,7 @@
         renderRooms();
         renderTop();
         initNavigation();
+        // Обновление погоды раз в 10 минут
         setInterval(fetchWeather, 600000);
     }
 
